@@ -1,0 +1,64 @@
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 40px;
+}
+
+.dashboard-text h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+
+  color: #ffffff;
+
+  margin-bottom: 10px;
+}
+
+.dashboard-text span {
+  display: inline-block;
+  animation: wave 2.5s infinite;
+}
+
+.dashboard-text p {
+  max-width: 600px;
+
+  font-size: 1rem;
+  line-height: 1.8;
+
+  color: #a7a7b5;
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  10% {
+    transform: rotate(15deg);
+  }
+
+  20% {
+    transform: rotate(-8deg);
+  }
+
+  30% {
+    transform: rotate(15deg);
+  }
+
+  40% {
+    transform: rotate(-4deg);
+  }
+
+  50% {
+    transform: rotate(10deg);
+  }
+
+  60% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}

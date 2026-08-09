@@ -1,0 +1,139 @@
+.library-filters {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  margin: 20px 0 30px;
+
+  flex-wrap: wrap;
+}
+
+.library-filters select {
+  height: 38px;
+
+  min-width: 130px;
+
+  padding: 0 14px;
+
+  background: #1b1529;
+
+  color: #eee;
+
+  border: 1px solid #4f2ca8;
+
+  border-radius: 20px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.library-filters select:hover {
+  border-color: #a66cff;
+
+  background: #241a38;
+}
+
+.library-filters select:focus {
+  outline: none;
+
+  border-color: #c084fc;
+}
+
+.filter-card {
+  width: 190px;
+}
+.favorite-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: white;
+  font-weight: 600;
+
+  margin-bottom: 12px;
+}
+
+.favorite-label svg {
+  color: #a855f7;
+}
+
+.favorite-toggle {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  height: 52px;
+
+  padding: 0 16px;
+
+  background: #2b2b3d;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 14px;
+
+  transition: 0.25s;
+}
+
+.favorite-toggle:hover {
+  border-color: #8b5cf6;
+
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+.favorite-toggle span {
+  color: white;
+
+  font-size: 0.9rem;
+
+  font-weight: 500;
+}
+.toggle-switch {
+  position: relative;
+
+  width: 52px;
+
+  height: 28px;
+
+  border: none;
+
+  border-radius: 999px;
+
+  background: #444;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.toggle-knob {
+  position: absolute;
+
+  top: 3px;
+
+  left: 3px;
+
+  width: 22px;
+
+  height: 22px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  transition: 0.25s;
+}
+
+.toggle-switch.active {
+  background: #8b5cf6;
+}
+
+.toggle-switch.active .toggle-knob {
+  transform: translateX(24px);
+}

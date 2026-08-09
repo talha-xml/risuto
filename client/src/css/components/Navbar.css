@@ -1,0 +1,235 @@
+.navbar {
+  width: 100%;
+  height: 80px;
+  padding: 0 60px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  z-index: 1000;
+
+  background: rgba(11, 16, 32, 0.65);
+  backdrop-filter: blur(12px);
+}
+
+/* ---------- Logo ---------- */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  text-decoration: none;
+  color: white;
+}
+
+.logo img {
+  width: 54px;
+  height: 54px;
+
+  object-fit: contain;
+
+  transition: 0.35s;
+}
+
+.logo span {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.logo:hover img {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+/* ---------- Navigation ---------- */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--text-primary);
+  text-decoration: none;
+
+  font-weight: 500;
+  font-size: 0.98rem;
+
+  transition: 0.25s;
+}
+
+.nav-links a svg {
+  font-size: 1rem;
+}
+
+.nav-links a:hover {
+  color: var(--primary);
+}
+
+/* ---------- Right Side ---------- */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.username {
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.4px;
+}
+
+/* ---------- Settings ---------- */
+
+.settings-btn {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+
+  color: white;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.settings-btn svg {
+  font-size: 1.15rem;
+}
+
+.settings-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: rotate(45deg);
+}
+.settings-menu {
+  position: absolute;
+
+  top: 65px;
+  right: 0;
+
+  width: 270px;
+
+  background: #171722;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+
+  animation: dropdown 0.2s ease;
+
+  z-index: 1000;
+}
+
+/* ---------- Guest ---------- */
+
+.signup-btn {
+  background: var(--primary);
+
+  padding: 10px 22px;
+
+  border-radius: 30px;
+}
+
+.signup-btn:hover {
+  background: #9d72ff;
+  color: white !important;
+}
+@keyframes dropdown {
+  from {
+    opacity: 0;
+
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+.menu-profile {
+  padding: 18px;
+}
+
+.menu-profile h4 {
+  color: white;
+
+  margin-bottom: 5px;
+}
+
+.menu-profile p {
+  color: #9ca3af;
+
+  font-size: 0.9rem;
+}
+
+.menu-divider {
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-item {
+  width: 100%;
+
+  padding: 14px 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  background: none;
+
+  border: none;
+
+  color: white;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  font-size: 0.95rem;
+
+  transition: 0.25s;
+}
+
+.menu-item:hover {
+  background: rgba(124, 58, 237, 0.15);
+}
+
+.danger {
+  color: #ef4444;
+}
+
+.danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+}

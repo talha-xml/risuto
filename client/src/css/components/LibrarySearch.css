@@ -1,0 +1,39 @@
+.library-search {
+  display: flex;
+  align-items: center;
+
+  width: 350px;
+  height: 42px;
+
+  background: #171221;
+  border: 1px solid #6c3cff;
+
+  border-radius: 12px;
+
+  padding: 0 15px;
+
+  gap: 10px;
+
+  margin: 20px 0;
+}
+
+.library-search svg {
+  color: #b58cff;
+  font-size: 16px;
+}
+
+.library-search input {
+  flex: 1;
+
+  background: transparent;
+  border: none;
+  outline: none;
+
+  color: white;
+
+  font-size: 14px;
+}
+
+.library-search input::placeholder {
+  color: #aaa;
+}

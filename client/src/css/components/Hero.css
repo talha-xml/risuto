@@ -1,0 +1,441 @@
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  position: relative;
+
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  padding: 0 2rem;
+
+  overflow: hidden;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* =========================
+   HERO CONTENT
+========================= */
+
+.hero-content {
+  position: relative;
+
+  z-index: 3;
+
+  max-width: 800px;
+
+  animation: fadeUp 1.2s ease;
+}
+
+.hero h1 {
+  font-size: 4.5rem;
+  line-height: 1.1;
+
+  margin-bottom: 1.5rem;
+
+  color: white;
+
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.hero p {
+  font-size: 1.25rem;
+
+  color: rgba(255, 255, 255, 0.9);
+
+  line-height: 1.8;
+
+  margin-bottom: 2.5rem;
+
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.hero-btn {
+  display: inline-block;
+
+  padding: 18px 42px;
+
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, var(--primary), #6d28d9);
+
+  color: white;
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition: 0.35s;
+}
+
+.hero-btn:hover {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.35), 0 0 45px rgba(139, 92, 246, 0.25);
+}
+
+/* =========================================================
+   SAKURA CONTAINER
+========================================================= */
+
+.petals {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+/* =========================================================
+   PETAL
+========================================================= */
+
+.petals span {
+  position: absolute;
+
+  top: -40px;
+
+  display: block;
+
+  width: 16px;
+  height: 12px;
+
+  background: linear-gradient(135deg, #ffe6ed, #ffc0cb 50%, #f28da8);
+
+  border-radius: 70% 30% 70% 30%;
+
+  opacity: 0.8;
+
+  /*
+    THIS is the important part.
+    Every petal gets the animation.
+  */
+  animation-name: sakuraFall;
+  animation-duration: 12s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+
+  will-change: transform;
+
+  box-shadow: 0 0 6px rgba(255, 182, 193, 0.3);
+}
+
+/* =========================================================
+   PETAL 1
+========================================================= */
+
+.petals span:nth-child(1) {
+  left: 5%;
+  animation-duration: 11s;
+  animation-delay: -2s;
+}
+
+/* PETAL 2 */
+
+.petals span:nth-child(2) {
+  left: 12%;
+  width: 13px;
+  height: 10px;
+
+  animation-duration: 14s;
+  animation-delay: -7s;
+}
+
+/* PETAL 3 */
+
+.petals span:nth-child(3) {
+  left: 19%;
+  width: 18px;
+  height: 13px;
+
+  animation-duration: 10s;
+  animation-delay: -4s;
+}
+
+/* PETAL 4 */
+
+.petals span:nth-child(4) {
+  left: 27%;
+
+  animation-duration: 16s;
+  animation-delay: -10s;
+}
+
+/* PETAL 5 */
+
+.petals span:nth-child(5) {
+  left: 35%;
+  width: 12px;
+  height: 9px;
+
+  animation-duration: 12s;
+  animation-delay: -5s;
+}
+
+/* PETAL 6 */
+
+.petals span:nth-child(6) {
+  left: 43%;
+  width: 18px;
+  height: 13px;
+
+  animation-duration: 15s;
+  animation-delay: -12s;
+}
+
+/* PETAL 7 */
+
+.petals span:nth-child(7) {
+  left: 51%;
+
+  animation-duration: 9s;
+  animation-delay: -3s;
+}
+
+/* PETAL 8 */
+
+.petals span:nth-child(8) {
+  left: 59%;
+  width: 13px;
+  height: 10px;
+
+  animation-duration: 13s;
+  animation-delay: -8s;
+}
+
+/* PETAL 9 */
+
+.petals span:nth-child(9) {
+  left: 66%;
+  width: 18px;
+  height: 13px;
+
+  animation-duration: 17s;
+  animation-delay: -14s;
+}
+
+/* PETAL 10 */
+
+.petals span:nth-child(10) {
+  left: 73%;
+  width: 12px;
+  height: 9px;
+
+  animation-duration: 10s;
+  animation-delay: -6s;
+}
+
+/* PETAL 11 */
+
+.petals span:nth-child(11) {
+  left: 80%;
+
+  animation-duration: 14s;
+  animation-delay: -9s;
+}
+
+/* PETAL 12 */
+
+.petals span:nth-child(12) {
+  left: 87%;
+  width: 17px;
+  height: 12px;
+
+  animation-duration: 12s;
+  animation-delay: -11s;
+}
+
+/* PETAL 13 */
+
+.petals span:nth-child(13) {
+  left: 94%;
+  width: 13px;
+  height: 10px;
+
+  animation-duration: 16s;
+  animation-delay: -5s;
+}
+
+/* PETAL 14 */
+
+.petals span:nth-child(14) {
+  left: 15%;
+  width: 11px;
+  height: 8px;
+
+  opacity: 0.6;
+
+  animation-duration: 18s;
+  animation-delay: -15s;
+}
+
+/* PETAL 15 */
+
+.petals span:nth-child(15) {
+  left: 38%;
+  width: 19px;
+  height: 14px;
+
+  opacity: 0.6;
+
+  animation-duration: 15s;
+  animation-delay: -13s;
+}
+
+/* PETAL 16 */
+
+.petals span:nth-child(16) {
+  left: 62%;
+  width: 11px;
+  height: 8px;
+
+  opacity: 0.55;
+
+  animation-duration: 19s;
+  animation-delay: -17s;
+}
+
+/* PETAL 17 */
+
+.petals span:nth-child(17) {
+  left: 82%;
+  width: 18px;
+  height: 13px;
+
+  opacity: 0.65;
+
+  animation-duration: 13s;
+  animation-delay: -10s;
+}
+
+/* PETAL 18 */
+
+.petals span:nth-child(18) {
+  left: 97%;
+  width: 13px;
+  height: 10px;
+
+  opacity: 0.6;
+
+  animation-duration: 11s;
+  animation-delay: -7s;
+}
+
+/* =========================================================
+   ACTUAL FALLING ANIMATION
+========================================================= */
+
+@keyframes sakuraFall {
+  0% {
+    transform: translate3d(0, -60px, 0) rotate(0deg);
+  }
+
+  10% {
+    transform: translate3d(45px, 10vh, 0) rotate(60deg);
+  }
+
+  20% {
+    transform: translate3d(-30px, 20vh, 0) rotate(120deg);
+  }
+
+  30% {
+    transform: translate3d(60px, 30vh, 0) rotate(180deg);
+  }
+
+  40% {
+    transform: translate3d(-45px, 40vh, 0) rotate(240deg);
+  }
+
+  50% {
+    transform: translate3d(30px, 50vh, 0) rotate(300deg);
+  }
+
+  60% {
+    transform: translate3d(-60px, 60vh, 0) rotate(360deg);
+  }
+
+  70% {
+    transform: translate3d(50px, 70vh, 0) rotate(420deg);
+  }
+
+  80% {
+    transform: translate3d(-35px, 80vh, 0) rotate(480deg);
+  }
+
+  90% {
+    transform: translate3d(45px, 90vh, 0) rotate(540deg);
+  }
+
+  100% {
+    transform: translate3d(-20px, 115vh, 0) rotate(600deg);
+  }
+}
+
+/* =========================================================
+   HERO ENTRANCE
+========================================================= */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 900px) {
+  .hero h1 {
+    font-size: 3.5rem;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 100svh;
+
+    padding: 0 1.2rem;
+  }
+
+  .hero h1 {
+    font-size: 2.7rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .hero-btn {
+    padding: 15px 32px;
+  }
+}

@@ -1,0 +1,40 @@
+.cursor-trail {
+  position: fixed;
+
+  width: 28px;
+
+  height: 28px;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  transform: translate(-50%, -50%);
+
+  background: rgba(168, 85, 247, 0.18);
+
+  backdrop-filter: blur(6px);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.35), 0 0 35px rgba(168, 85, 247, 0.15);
+
+  z-index: 99999;
+}
+.cursor-core {
+  position: absolute;
+
+  left: 50%;
+
+  top: 50%;
+
+  width: 6px;
+
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  transform: translate(-50%, -50%);
+}

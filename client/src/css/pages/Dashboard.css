@@ -1,0 +1,21 @@
+.dashboard-container {
+  width: 90%;
+  max-width: 1400px;
+  margin: 40px auto;
+}
+
+.dashboard-container h1 {
+  color: white;
+  font-size: 2.8rem;
+  font-weight: 700;
+}
+
+.dashboard-container p {
+  color: #a1a1aa;
+  margin-top: 8px;
+  font-size: 1.05rem;
+}
+.dashboard {
+  width: min(1350px, 92%);
+  margin: 120px auto 80px;
+}

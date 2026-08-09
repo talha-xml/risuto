@@ -1,0 +1,210 @@
+.anime-top {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+.anime-bottom {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+.anime-meta {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+.anime-row {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 14px 18px;
+
+  background: #171221;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 14px;
+
+  margin-bottom: 10px;
+
+  cursor: pointer;
+  overflow: hidden;
+  transition: 0.25s;
+}
+
+.anime-row:hover {
+  border-color: #8b5cf6;
+
+  transform: translateY(-2px);
+}
+
+.anime-main {
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.anime-main h3 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 1rem;
+
+  font-weight: 600;
+}
+
+.anime-genres {
+  display: flex;
+
+  gap: 6px;
+}
+
+.anime-genres span {
+  background: #2b2b3d;
+
+  padding: 4px 9px;
+
+  border-radius: 20px;
+
+  font-size: 0.75rem;
+
+  color: #c4b5fd;
+}
+
+.status,
+.priority {
+  padding: 5px 12px;
+
+  border-radius: 20px;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+}
+
+.status {
+  background: #312e81;
+
+  color: #ddd6fe;
+}
+
+.priority {
+  background: transparent;
+
+  padding: 0;
+
+  font-weight: 600;
+
+  font-size: 0.85rem;
+}
+
+.priority.high {
+  color: #fbbf24;
+}
+
+.priority.normal {
+  color: #d1d5db;
+}
+
+.priority.low {
+  color: #6ee7b7;
+}
+
+.icons {
+  display: flex;
+
+  gap: 8px;
+
+  margin-left: 5px;
+}
+
+.mature-icon {
+  color: #ef4444;
+
+  font-size: 18px;
+}
+
+.favorite-ribbon {
+  position: absolute;
+
+  top: 12px;
+  right: -32px;
+
+  width: 110px;
+
+  padding: 4px 0;
+
+  background: #facc15;
+
+  color: #1f2937;
+
+  font-size: 0.72rem;
+
+  font-weight: 700;
+
+  text-align: center;
+
+  letter-spacing: 0.5px;
+
+  transform: rotate(45deg);
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+.favorite-ribbon::before,
+.favorite-ribbon::after {
+  content: '';
+
+  position: absolute;
+
+  bottom: -6px;
+
+  width: 0;
+
+  height: 0;
+
+  border-style: solid;
+}
+
+.favorite-ribbon::before {
+  left: 0;
+
+  border-width: 6px 6px 0 0;
+
+  border-color: #b48a00 transparent transparent transparent;
+}
+
+.favorite-ribbon::after {
+  right: 0;
+
+  border-width: 6px 0 0 6px;
+
+  border-color: #b48a00 transparent transparent transparent;
+}
