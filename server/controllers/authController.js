@@ -2,7 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const transporter = require('../config/email');
+const resend = require('../config/email');
 
 // =====================================================
 // Signup
@@ -12,6 +12,7 @@ exports.signup = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
 
+    // Check if email already exists
     const existingUser = await User.findOne({
       email
     });
@@ -32,10 +33,13 @@ exports.signup = async (req, res) => {
       });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Generate verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
+    // Create user
     await User.create({
       fullName,
       email,
@@ -43,190 +47,204 @@ exports.signup = async (req, res) => {
       verificationToken
     });
 
+    // Verification URL
     const verificationURL = `${process.env.SERVER_URL}/api/auth/verify/${verificationToken}`;
 
     console.log('Attempting to send verification email to:', email);
     console.log('Verification URL:', verificationURL);
 
-    await transporter.sendMail({
-      from: `"Risuto" <${process.env.EMAIL_USER}>`,
+    // Send verification email using Resend
+    const { data, error } = await resend.emails.send({
+      from: 'Risuto <onboarding@resend.dev>',
       to: email,
       subject: 'Verify Your Risuto Account',
 
       html: `
-    <div style="
-      margin: 0;
-      padding: 40px 20px;
-      background-color: #080c1c;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #ffffff;
-    ">
-
-      <div style="
-        max-width: 600px;
-        margin: 0 auto;
-        background: #111827;
-        border: 1px solid rgba(139, 92, 246, 0.25);
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
-      ">
-
-        <!-- Header -->
-
         <div style="
-          padding: 30px;
-          text-align: center;
-          background: linear-gradient(
-            135deg,
-            #1e1b4b,
-            #312e81
-          );
+          margin: 0;
+          padding: 40px 20px;
+          background-color: #080c1c;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #ffffff;
         ">
-
-          <h1 style="
-            margin: 0;
-            color: #ffffff;
-            font-size: 32px;
-            letter-spacing: 1px;
-          ">
-            RISUTO
-          </h1>
-
-          <p style="
-            margin: 8px 0 0;
-            color: #c4b5fd;
-            font-size: 14px;
-          ">
-            Your Anime Journey
-          </p>
-
-        </div>
-
-        <!-- Content -->
-
-        <div style="
-          padding: 40px 35px;
-        ">
-
-          <h2 style="
-            margin: 0 0 20px;
-            color: #ffffff;
-            font-size: 24px;
-          ">
-            Welcome to Risuto! 🎉
-          </h2>
-
-          <p style="
-            margin: 0 0 16px;
-            color: #d1d5db;
-            font-size: 15px;
-            line-height: 1.7;
-          ">
-            Thanks for creating your Risuto account.
-            We're excited to have you join us.
-          </p>
-
-          <p style="
-            margin: 0 0 28px;
-            color: #d1d5db;
-            font-size: 15px;
-            line-height: 1.7;
-          ">
-            Before you start organizing your anime journey,
-            please verify your email address by clicking the
-            button below.
-          </p>
-
-          <!-- Verify Button -->
 
           <div style="
-            text-align: center;
-            margin: 30px 0;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #111827;
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
           ">
 
-            <a
-              href="${verificationURL}"
-              style="
-                display: inline-block;
-                padding: 14px 30px;
-                background: linear-gradient(
-                  135deg,
-                  #8b5cf6,
-                  #6d28d9
-                );
+            <!-- Header -->
+
+            <div style="
+              padding: 30px;
+              text-align: center;
+              background: linear-gradient(
+                135deg,
+                #1e1b4b,
+                #312e81
+              );
+            ">
+
+              <h1 style="
+                margin: 0;
                 color: #ffffff;
-                text-decoration: none;
-                border-radius: 10px;
+                font-size: 32px;
+                letter-spacing: 1px;
+              ">
+                RISUTO
+              </h1>
+
+              <p style="
+                margin: 8px 0 0;
+                color: #c4b5fd;
+                font-size: 14px;
+              ">
+                Your Anime Journey
+              </p>
+
+            </div>
+
+            <!-- Content -->
+
+            <div style="
+              padding: 40px 35px;
+            ">
+
+              <h2 style="
+                margin: 0 0 20px;
+                color: #ffffff;
+                font-size: 24px;
+              ">
+                Welcome to Risuto! 🎉
+              </h2>
+
+              <p style="
+                margin: 0 0 16px;
+                color: #d1d5db;
                 font-size: 15px;
-                font-weight: bold;
-                box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
-              "
-            >
-              Verify My Account
-            </a>
+                line-height: 1.7;
+              ">
+                Thanks for creating your Risuto account.
+                We're excited to have you join us.
+              </p>
+
+              <p style="
+                margin: 0 0 28px;
+                color: #d1d5db;
+                font-size: 15px;
+                line-height: 1.7;
+              ">
+                Before you start organizing your anime journey,
+                please verify your email address by clicking the
+                button below.
+              </p>
+
+              <!-- Verify Button -->
+
+              <div style="
+                text-align: center;
+                margin: 30px 0;
+              ">
+
+                <a
+                  href="${verificationURL}"
+                  style="
+                    display: inline-block;
+                    padding: 14px 30px;
+                    background: linear-gradient(
+                      135deg,
+                      #8b5cf6,
+                      #6d28d9
+                    );
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    font-weight: bold;
+                    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+                  "
+                >
+                  Verify My Account
+                </a>
+
+              </div>
+
+              <p style="
+                margin: 25px 0 10px;
+                color: #94a3b8;
+                font-size: 13px;
+                line-height: 1.6;
+              ">
+                If the button doesn't work, copy and paste the
+                following link into your browser:
+              </p>
+
+              <p style="
+                margin: 0;
+                padding: 12px;
+                background: #0f172a;
+                border-radius: 8px;
+                color: #a78bfa;
+                font-size: 12px;
+                word-break: break-all;
+              ">
+                ${verificationURL}
+              </p>
+
+            </div>
+
+            <!-- Footer -->
+
+            <div style="
+              padding: 20px 30px;
+              text-align: center;
+              background: #0f172a;
+              border-top: 1px solid rgba(255, 255, 255, 0.06);
+            ">
+
+              <p style="
+                margin: 0;
+                color: #64748b;
+                font-size: 12px;
+              ">
+                If you didn't create a Risuto account,
+                you can safely ignore this email.
+              </p>
+
+              <p style="
+                margin: 10px 0 0;
+                color: #475569;
+                font-size: 11px;
+              ">
+                © ${new Date().getFullYear()} Risuto
+              </p>
+
+            </div>
 
           </div>
 
-          <p style="
-            margin: 25px 0 10px;
-            color: #94a3b8;
-            font-size: 13px;
-            line-height: 1.6;
-          ">
-            If the button doesn't work, copy and paste the
-            following link into your browser:
-          </p>
-
-          <p style="
-            margin: 0;
-            padding: 12px;
-            background: #0f172a;
-            border-radius: 8px;
-            color: #a78bfa;
-            font-size: 12px;
-            word-break: break-all;
-          ">
-            ${verificationURL}
-          </p>
-
         </div>
-
-        <!-- Footer -->
-
-        <div style="
-          padding: 20px 30px;
-          text-align: center;
-          background: #0f172a;
-          border-top: 1px solid rgba(255, 255, 255, 0.06);
-        ">
-
-          <p style="
-            margin: 0;
-            color: #64748b;
-            font-size: 12px;
-          ">
-            If you didn't create a Risuto account,
-            you can safely ignore this email.
-          </p>
-
-          <p style="
-            margin: 10px 0 0;
-            color: #475569;
-            font-size: 11px;
-          ">
-            © ${new Date().getFullYear()} Risuto
-          </p>
-
-        </div>
-
-      </div>
-
-    </div>
-  `
+      `
     });
 
-    res.status(201).json({
+    // Handle Resend error
+    if (error) {
+      console.error('RESEND EMAIL ERROR:', error);
+
+      return res.status(500).json({
+        message: 'Account created, but verification email could not be sent.'
+      });
+    }
+
+    console.log('Verification email sent successfully:', data);
+
+    // Successful signup
+    return res.status(201).json({
       message: 'Account created. Please verify your email.'
     });
   } catch (error) {
@@ -255,13 +273,14 @@ exports.verifyEmail = async (req, res) => {
     }
 
     user.isVerified = true;
-
     user.verificationToken = undefined;
 
     await user.save();
 
     return res.redirect(`${process.env.CLIENT_URL}/login?verified=true`);
   } catch (error) {
+    console.error('VERIFY EMAIL ERROR:', error);
+
     res.status(500).send(error.message);
   }
 };
@@ -332,6 +351,8 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('LOGIN ERROR:', error);
+
     res.status(500).json({
       message: error.message
     });
@@ -366,14 +387,12 @@ exports.forgotPassword = async (req, res) => {
     }
 
     /*
-     * Generate a secure random token.
+     * Generate secure random token.
      */
     const resetToken = crypto.randomBytes(32).toString('hex');
 
     /*
-     * Store a hashed version of the token.
-     *
-     * The actual token is only sent through email.
+     * Store hashed version of token.
      */
     const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
@@ -387,21 +406,19 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
 
     /*
-     * URL that the user will receive.
-     *
-     * Example:
-     * http://localhost:3000/reset-password?token=abc123
+     * Password reset URL.
      */
     const resetURL = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
 
+    console.log('Attempting to send password reset email to:', user.email);
+    console.log('Password reset URL:', resetURL);
+
     /*
-     * Send reset email.
+     * Send password reset email using Resend.
      */
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-
+    const { data, error } = await resend.emails.send({
+      from: 'Risuto <onboarding@resend.dev>',
       to: user.email,
-
       subject: 'Reset Your Risuto Password',
 
       html: `
@@ -460,6 +477,16 @@ exports.forgotPassword = async (req, res) => {
       `
     });
 
+    if (error) {
+      console.error('RESEND PASSWORD RESET ERROR:', error);
+
+      return res.status(500).json({
+        message: 'Something went wrong. Please try again.'
+      });
+    }
+
+    console.log('Password reset email sent successfully:', data);
+
     res.status(200).json({
       message: 'If an account exists with this email, we have sent a password reset link.'
     });
@@ -490,6 +517,7 @@ exports.resetPassword = async (req, res) => {
      * Validate password.
      */
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
         message:
@@ -498,7 +526,7 @@ exports.resetPassword = async (req, res) => {
     }
 
     /*
-     * Hash the token received from the frontend.
+     * Hash token received from frontend.
      */
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
@@ -522,7 +550,7 @@ exports.resetPassword = async (req, res) => {
     }
 
     /*
-     * Hash the new password.
+     * Hash new password.
      */
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -566,6 +594,8 @@ exports.getCurrentUser = async (req, res) => {
       user
     });
   } catch (error) {
+    console.error('GET CURRENT USER ERROR:', error);
+
     res.status(500).json({
       message: error.message
     });
