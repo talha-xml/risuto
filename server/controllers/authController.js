@@ -245,7 +245,8 @@ exports.signup = async (req, res) => {
 
     // Successful signup
     return res.status(201).json({
-      message: 'Account created. Please verify your email.'
+      message:
+        'Account created. Please verify your email. Do not forget to check your spam folder if you do not see the email in your inbox.'
     });
   } catch (error) {
     console.error('SIGNUP ERROR:', error);
