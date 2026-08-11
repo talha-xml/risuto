@@ -45,6 +45,9 @@ exports.signup = async (req, res) => {
 
     const verificationURL = `${process.env.SERVER_URL}/api/auth/verify/${verificationToken}`;
 
+    console.log('Attempting to send verification email to:', email);
+    console.log('Verification URL:', verificationURL);
+
     await transporter.sendMail({
       from: `"Risuto" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -227,6 +230,8 @@ exports.signup = async (req, res) => {
       message: 'Account created. Please verify your email.'
     });
   } catch (error) {
+    console.error('SIGNUP ERROR:', error);
+
     res.status(500).json({
       message: error.message
     });
