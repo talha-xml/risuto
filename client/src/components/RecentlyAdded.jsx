@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import API_URL from '../config/api';
-
 import '../css/components/RecentlyAdded.css';
 
 function RecentlyAdded() {
@@ -16,7 +15,6 @@ function RecentlyAdded() {
         });
 
         const data = await response.json();
-
         setAnime(data);
       } catch (error) {
         console.log(error);
@@ -29,7 +27,6 @@ function RecentlyAdded() {
   return (
     <section className="recent">
       <h2>Recently Added</h2>
-
       {anime.length === 0 ? (
         <div className="empty">No anime added yet.</div>
       ) : (

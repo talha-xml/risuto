@@ -1,5 +1,4 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-
 import '../css/components/AnimeDonut.css';
 
 const COLORS = [
@@ -49,7 +48,6 @@ function AnimeDonut({ stats }) {
                 <Cell key={index} fill={COLORS[index]} />
               ))}
             </Pie>
-
             <Tooltip />
           </PieChart>
         </ResponsiveContainer>
@@ -63,5 +61,4 @@ function AnimeDonut({ stats }) {
     </div>
   );
 }
-
 export default AnimeDonut;

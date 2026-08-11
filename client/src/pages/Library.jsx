@@ -19,7 +19,6 @@ function Library() {
   const [priority, setPriority] = useState('');
   const [genre, setGenre] = useState('');
   const [sort, setSort] = useState('');
-
   const [currentPage, setCurrentPage] = useState(1);
   const ANIME_PER_PAGE = 30;
 
@@ -102,7 +101,6 @@ function Library() {
         <div className="library-container">
           <div className="library-header">
             <h1>Your Anime Journey</h1>
-
             <p>Every story you've watched, every adventure waiting to begin.</p>
           </div>
 

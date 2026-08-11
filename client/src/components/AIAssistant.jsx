@@ -44,19 +44,13 @@ function AIAssistant() {
           <div className="ai-body">
             <div className="ai-message">
               <strong>Risuto AI</strong>
-
-              <p>Hello 👋</p>
-
+              <p>Hey there! How can I help you today?</p>
               <p>I can help you explore your anime collection.</p>
             </div>
-
             <div className="suggestions">
               <button>What should I watch next?</button>
-
               <button>Show completed anime</button>
-
               <button>What's on hold?</button>
-
               <button>Recently added</button>
             </div>
           </div>

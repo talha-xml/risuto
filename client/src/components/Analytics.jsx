@@ -6,7 +6,6 @@ function Analytics({ stats }) {
   return (
     <section className="analytics">
       <AnimeDonut stats={stats} />
-
       <StatusBreakdown stats={stats} />
     </section>
   );

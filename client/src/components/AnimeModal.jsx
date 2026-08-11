@@ -15,11 +15,9 @@ function AnimeModal({ anime, onClose, refreshAnime }) {
         <button className="close-modal" onClick={onClose}>
           <FaTimes />
         </button>
-
         <AddAnimeForm mode="edit" anime={anime} onSuccess={onSuccess} />
       </div>
     </div>
   );
 }
-
 export default AnimeModal;

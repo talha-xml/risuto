@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { FaTags, FaChevronDown } from 'react-icons/fa';
-
 import '../css/components/GenreFilter.css';
 
 function GenreFilter({ genre, setGenre }) {
   const [open, setOpen] = useState(false);
-
   const genres = [
     'All',
     'Action',
@@ -26,7 +24,6 @@ function GenreFilter({ genre, setGenre }) {
 
   const handleSelect = (item) => {
     setGenre(item === 'All' ? '' : item);
-
     setOpen(false);
   };
 
@@ -36,13 +33,10 @@ function GenreFilter({ genre, setGenre }) {
         <FaTags />
         Genres
       </label>
-
       <button className="genre-button" onClick={() => setOpen(!open)}>
         <span>{genre || 'All'}</span>
-
         <FaChevronDown className={open ? 'rotate' : ''} />
       </button>
-
       {open && (
         <div className="genre-menu">
           {genres.map((item) => (
@@ -59,5 +53,4 @@ function GenreFilter({ genre, setGenre }) {
     </div>
   );
 }
-
 export default GenreFilter;

@@ -29,12 +29,10 @@ function Hero() {
           <br />
           Beautifully Remembered.
         </h1>
-
         <p>
           Keep track of every story you've loved, every character you've cherished, and every
           adventure you've completed.
         </p>
-
         <Link to="/about" className="hero-btn">
           Explore More
         </Link>

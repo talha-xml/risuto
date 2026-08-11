@@ -1,28 +1,22 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
 import API_URL from '../config/api';
 import signupBg from '../assets/images/signup.webp';
-
 import '../css/pages/Auth.css';
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
-
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
     setMessage('');
     setMessageType('');
 
@@ -43,7 +37,6 @@ function Signup() {
     try {
       const response = await fetch(`${API_URL}/auth/signup`, {
         method: 'POST',
-
         headers: {
           'Content-Type': 'application/json'
         },
@@ -65,14 +58,12 @@ function Signup() {
 
       setMessage(data.message);
       setMessageType('success');
-
       setFullName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
     } catch (error) {
       console.error(error);
-
       setMessage('Something went wrong. Please try again.');
       setMessageType('error');
     }
@@ -89,13 +80,10 @@ function Signup() {
         <div className="auth-heading">
           <h1>Join Risuto</h1>
         </div>
-
         <p>Start organizing your anime collection today.</p>
       </div>
-
       <div className="auth-right">
         <h2>Create Account</h2>
-
         <form onSubmit={handleSignup}>
           <div className="input-group">
             <input
@@ -104,16 +92,12 @@ function Signup() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
-
             <label>Full Name</label>
           </div>
-
           <div className="input-group">
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-
             <label>Email Address</label>
           </div>
-
           <div className="input-group">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -121,9 +105,7 @@ function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-
             <label>Password</label>
-
             <button
               type="button"
               className="password-toggle"
@@ -133,7 +115,6 @@ function Signup() {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
-
           <div className="input-group">
             <input
               type="password"
@@ -141,17 +122,13 @@ function Signup() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-
             <label>Confirm Password</label>
           </div>
-
           {message && <p className={`auth-${messageType}`}>{message}</p>}
-
           <button className="auth-btn" type="submit">
             Create Account
           </button>
         </form>
-
         <p>
           Already have an account?
           <Link to="/login">Login</Link>
@@ -160,5 +137,4 @@ function Signup() {
     </section>
   );
 }
-
 export default Signup;

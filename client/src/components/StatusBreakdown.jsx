@@ -2,7 +2,6 @@ import '../css/components/StatusBreakdown.css';
 
 function StatusBreakdown({ stats }) {
   const total = stats.total || 0;
-
   const statuses = [
     {
       label: 'Completed',

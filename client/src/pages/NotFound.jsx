@@ -19,16 +19,12 @@ function NotFound() {
         <div className="not-found-icon">
           <FaGhost />
         </div>
-
         <h1>404</h1>
-
         <h2>Oops! This page got lost.</h2>
-
         <p>
           Looks like you've wandered into an empty part of the anime world. The page you're looking
           for doesn't exist.
         </p>
-
         <Link to="/" className="not-found-home">
           <FaHome />
           Back to Home
@@ -37,5 +33,4 @@ function NotFound() {
     </main>
   );
 }
-
 export default NotFound;

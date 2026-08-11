@@ -6,16 +6,12 @@ import '../css/components/LibraryFilters.css';
 function LibraryFilters({
   status,
   setStatus,
-
   priority,
   setPriority,
-
   genre,
   setGenre,
-
   sort,
   setSort,
-
   favoritesOnly,
   setFavoritesOnly
 }) {
@@ -78,10 +74,8 @@ function LibraryFilters({
           <FaHeart />
           Favorites
         </label>
-
         <div className="favorite-toggle">
           <span>Favorites Only</span>
-
           <button
             type="button"
             className={`toggle-switch ${favoritesOnly ? 'active' : ''}`}

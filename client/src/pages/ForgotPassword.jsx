@@ -19,11 +19,9 @@ function ForgotPassword() {
     try {
       const response = await fetch(`${API_URL}/auth/forgot-password`, {
         method: 'POST',
-
         headers: {
           'Content-Type': 'application/json'
         },
-
         body: JSON.stringify({
           email
         })
@@ -55,12 +53,10 @@ function ForgotPassword() {
         {!sent ? (
           <>
             <h1>Reset Your Password</h1>
-
             <p>
               Don't worry, it happens. Enter your email and we'll help you get back into your Risuto
               journey.
             </p>
-
             <form onSubmit={handleSubmit}>
               <div className="input-group">
                 <input
@@ -83,9 +79,7 @@ function ForgotPassword() {
         ) : (
           <div className="reset-success">
             <div className="success-icon">✓</div>
-
             <h1>Check Your Email</h1>
-
             <p>
               If an account exists with this email, we have sent a password reset link. Please check
               your inbox and follow the instructions.
@@ -93,16 +87,13 @@ function ForgotPassword() {
           </div>
         )}
       </div>
-
       <div className="forgot-right">
         <div className="forgot-overlay">
           <h2>Never Lose Your Anime Memories.</h2>
-
           <p>Your collection matters the most in this journey.</p>
         </div>
       </div>
     </section>
   );
 }
-
 export default ForgotPassword;

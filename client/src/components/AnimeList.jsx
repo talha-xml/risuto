@@ -20,10 +20,7 @@ function AnimeList({
 }) {
   const [selectedAnime, setSelectedAnime] = useState(null);
 
-  // ===========================
-  // FILTERING
-  // ===========================
-
+  // Filters
   const filteredAnime = anime.filter((item) => {
     if (favoritesOnly && !item.favorite) {
       return false;
@@ -45,10 +42,7 @@ function AnimeList({
     return matchesSearch && matchesStatus && matchesPriority && matchesGenre;
   });
 
-  // ===========================
-  // SORTING
-  // ===========================
-
+  // Sorting
   let sortedAnime = [...filteredAnime];
 
   switch (sort) {
@@ -76,20 +70,14 @@ function AnimeList({
       sortedAnime.sort((a, b) => a.title.localeCompare(b.title));
   }
 
-  // ===========================
-  // PAGINATION
-  // ===========================
-
+  // Pagination
   const totalPages = Math.max(1, Math.ceil(sortedAnime.length / animePerPage));
 
   const startIndex = (currentPage - 1) * animePerPage;
 
   const paginatedAnime = sortedAnime.slice(startIndex, startIndex + animePerPage);
 
-  // ===========================
-  // GROUPING
-  // ===========================
-
+  // Grouping
   const groupedAnime = paginatedAnime.reduce((groups, item) => {
     const letter = item.title[0].toUpperCase();
 
@@ -113,6 +101,8 @@ function AnimeList({
           ))}
         </div>
       ))}
+
+      {/* Pagination Controls */}
       <div className="pagination">
         <button
           onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
@@ -132,6 +122,8 @@ function AnimeList({
           Next →
         </button>
       </div>
+
+      {/* Modal */}
       {selectedAnime && (
         <AnimeModal
           anime={selectedAnime}

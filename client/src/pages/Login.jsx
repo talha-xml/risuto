@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
 import API_URL from '../config/api';
 import loginBg from '../assets/images/login.jpg';
-
 import '../css/pages/Auth.css';
 
 function Login() {
@@ -13,7 +11,6 @@ function Login() {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
-
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -26,14 +23,12 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     setMessage('');
     setMessageType('');
 
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
-
         headers: {
           'Content-Type': 'application/json'
         },
@@ -78,20 +73,16 @@ function Login() {
         <div className="auth-heading">
           <h1>Welcome Back</h1>
         </div>
-
         <p>Continue your anime journey with Risuto.</p>
       </div>
 
       <div className="auth-right">
         <h2>Login</h2>
-
         <form onSubmit={handleLogin}>
           <div className="input-group">
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-
             <label>Email Address</label>
           </div>
-
           <div className="input-group">
             <input
               type={showPassword ? 'text' : 'password'}

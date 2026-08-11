@@ -41,5 +41,4 @@ function GenreSelector({ selectedGenres, setSelectedGenres }) {
     </div>
   );
 }
-
 export default GenreSelector;

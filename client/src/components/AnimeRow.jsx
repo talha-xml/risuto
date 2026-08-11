@@ -39,5 +39,4 @@ function AnimeRow({ anime, onClick }) {
     </div>
   );
 }
-
 export default AnimeRow;

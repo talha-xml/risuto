@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router-dom';
-
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
@@ -10,7 +9,6 @@ import ResetPassword from '../pages/ResetPassword';
 import AddAnime from '../pages/AddAnime';
 import Library from '../pages/Library';
 import About from '../pages/About';
-
 import PublicRoute from '../components/PublicRoute';
 import ProtectedRoute from '../components/ProtectedRoute';
 

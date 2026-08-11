@@ -13,7 +13,6 @@ function CursorTrail() {
     }
 
     window.addEventListener('mousemove', move);
-
     return () => {
       window.removeEventListener('mousemove', move);
     };
@@ -25,5 +24,4 @@ function CursorTrail() {
     </div>
   );
 }
-
 export default CursorTrail;

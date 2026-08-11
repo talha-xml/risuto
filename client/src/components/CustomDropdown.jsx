@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
-
 import '../css/components/CustomDropdown.css';
 
 function CustomDropdown({ label, icon, options, value, onChange }) {
   const [open, setOpen] = useState(false);
-
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -14,9 +12,7 @@ function CustomDropdown({ label, icon, options, value, onChange }) {
         setOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleOutside);
     };
@@ -28,13 +24,10 @@ function CustomDropdown({ label, icon, options, value, onChange }) {
         {icon}
         {label}
       </label>
-
       <button className="dropdown-button" onClick={() => setOpen(!open)}>
         <span>{value}</span>
-
         <FaChevronDown className={open ? 'rotate' : ''} />
       </button>
-
       {open && (
         <div className="dropdown-menu">
           {options.map((option) => (
@@ -54,5 +47,4 @@ function CustomDropdown({ label, icon, options, value, onChange }) {
     </div>
   );
 }
-
 export default CustomDropdown;
