@@ -360,9 +360,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// =====================================================
 // Forgot Password
-// =====================================================
 
 exports.forgotPassword = async (req, res) => {
   try {
@@ -374,49 +372,42 @@ exports.forgotPassword = async (req, res) => {
       });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     const user = await User.findOne({
-      email
+      email: normalizedEmail
     });
 
-    /*
-     * Don't reveal whether an email exists.
-     */
+    // Always return the same response when the email does not exist.
+    // This prevents people from discovering which emails have accounts.
     if (!user) {
       return res.status(200).json({
         message: 'If an account exists with this email, we have sent a password reset link.'
       });
     }
 
-    /*
-     * Generate secure random token.
-     */
+    // Generate a secure random token.
     const resetToken = crypto.randomBytes(32).toString('hex');
 
-    /*
-     * Store hashed version of token.
-     */
+    // Store only the hashed version of the token in the database.
     const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
     user.resetPasswordToken = hashedToken;
 
-    /*
-     * Token expires in 15 minutes.
-     */
+    // The reset link will remain valid for 15 minutes.
     user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
 
     await user.save();
 
-    /*
-     * Password reset URL.
-     */
-    const resetURL = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+    // Create the reset link for the deployed frontend.
+    const resetURL = `${process.env.CLIENT_URL}/reset-password?token=${encodeURIComponent(
+      resetToken
+    )}`;
 
-    console.log('Attempting to send password reset email to:', user.email);
+    console.log('Password reset requested for:', user.email);
     console.log('Password reset URL:', resetURL);
 
-    /*
-     * Send password reset email using Resend.
-     */
+    // Send the password reset email.
     const { data, error } = await resend.emails.send({
       from: 'Risuto <onboarding@resend.dev>',
       to: user.email,
@@ -424,62 +415,185 @@ exports.forgotPassword = async (req, res) => {
 
       html: `
         <div style="
-          font-family: Arial, sans-serif;
-          max-width: 600px;
-          margin: auto;
-          padding: 30px;
-          background: #0b1020;
+          margin: 0;
+          padding: 40px 20px;
+          background-color: #080c1c;
+          font-family: Arial, Helvetica, sans-serif;
           color: #ffffff;
-          border-radius: 12px;
         ">
 
-          <h2 style="color: #a855f7;">
-            Reset Your Risuto Password
-          </h2>
+          <div style="
+            max-width: 600px;
+            margin: 0 auto;
+            background: #111827;
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+          ">
 
-          <p>
-            We received a request to reset your Risuto password.
-          </p>
+            <div style="
+              padding: 30px;
+              text-align: center;
+              background: linear-gradient(
+                135deg,
+                #1e1b4b,
+                #312e81
+              );
+            ">
 
-          <p>
-            Click the button below to create a new password.
-          </p>
+              <h1 style="
+                margin: 0;
+                color: #ffffff;
+                font-size: 32px;
+                letter-spacing: 1px;
+              ">
+                RISUTO
+              </h1>
 
-          <div style="margin: 30px 0;">
+              <p style="
+                margin: 8px 0 0;
+                color: #c4b5fd;
+                font-size: 14px;
+              ">
+                Your Anime Journey
+              </p>
 
-            <a
-              href="${resetURL}"
-              style="
-                display: inline-block;
-                padding: 14px 24px;
-                background: #8b5cf6;
-                color: white;
-                text-decoration: none;
+            </div>
+
+            <div style="
+              padding: 40px 35px;
+            ">
+
+              <h2 style="
+                margin: 0 0 20px;
+                color: #ffffff;
+                font-size: 24px;
+              ">
+                Reset Your Password
+              </h2>
+
+              <p style="
+                margin: 0 0 16px;
+                color: #d1d5db;
+                font-size: 15px;
+                line-height: 1.7;
+              ">
+                We received a request to reset your Risuto password.
+              </p>
+
+              <p style="
+                margin: 0 0 28px;
+                color: #d1d5db;
+                font-size: 15px;
+                line-height: 1.7;
+              ">
+                Click the button below to create a new password for
+                your account.
+              </p>
+
+              <div style="
+                text-align: center;
+                margin: 30px 0;
+              ">
+
+                <a
+                  href="${resetURL}"
+                  style="
+                    display: inline-block;
+                    padding: 14px 30px;
+                    background: linear-gradient(
+                      135deg,
+                      #8b5cf6,
+                      #6d28d9
+                    );
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    font-weight: bold;
+                    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+                  "
+                >
+                  Reset Password
+                </a>
+
+              </div>
+
+              <p style="
+                margin: 25px 0 10px;
+                color: #94a3b8;
+                font-size: 13px;
+                line-height: 1.6;
+              ">
+                This link will expire in 15 minutes.
+              </p>
+
+              <p style="
+                margin: 25px 0 10px;
+                color: #94a3b8;
+                font-size: 13px;
+                line-height: 1.6;
+              ">
+                If the button doesn't work, copy and paste the
+                following link into your browser:
+              </p>
+
+              <p style="
+                margin: 0;
+                padding: 12px;
+                background: #0f172a;
                 border-radius: 8px;
-                font-weight: bold;
-              "
-            >
-              Reset Password
-            </a>
+                color: #a78bfa;
+                font-size: 12px;
+                word-break: break-all;
+              ">
+                ${resetURL}
+              </p>
+
+            </div>
+
+            <div style="
+              padding: 20px 30px;
+              text-align: center;
+              background: #0f172a;
+              border-top: 1px solid rgba(255, 255, 255, 0.06);
+            ">
+
+              <p style="
+                margin: 0;
+                color: #64748b;
+                font-size: 12px;
+              ">
+                If you didn't request a password reset,
+                you can safely ignore this email.
+              </p>
+
+              <p style="
+                margin: 10px 0 0;
+                color: #475569;
+                font-size: 11px;
+              ">
+                © ${new Date().getFullYear()} Risuto
+              </p>
+
+            </div>
 
           </div>
-
-          <p>
-            This password reset link will expire in
-            <strong>15 minutes</strong>.
-          </p>
-
-          <p style="color: #94a3b8;">
-            If you didn't request a password reset,
-            you can safely ignore this email.
-          </p>
 
         </div>
       `
     });
 
+    // Do not leave a valid reset token in the database
+    // if the email could not be sent.
     if (error) {
       console.error('RESEND PASSWORD RESET ERROR:', error);
+
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+
+      await user.save();
 
       return res.status(500).json({
         message: 'Something went wrong. Please try again.'
@@ -488,13 +602,13 @@ exports.forgotPassword = async (req, res) => {
 
     console.log('Password reset email sent successfully:', data);
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'If an account exists with this email, we have sent a password reset link.'
     });
   } catch (error) {
-    console.error('Forgot password error:', error);
+    console.error('FORGOT PASSWORD ERROR:', error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Something went wrong. Please try again.'
     });
   }

@@ -11,7 +11,6 @@ function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setMessage('');
     setMessageType('');
     setLoading(true);
@@ -23,7 +22,7 @@ function ForgotPassword() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email
+          email: email.trim().toLowerCase()
         })
       });
 
@@ -32,14 +31,12 @@ function ForgotPassword() {
       if (!response.ok) {
         setMessage(data.message || 'Something went wrong. Please try again.');
         setMessageType('error');
-        setLoading(false);
         return;
       }
 
       setSent(true);
     } catch (error) {
-      console.error(error);
-
+      console.error('Forgot password request error:', error);
       setMessage('Unable to connect to the server. Please try again.');
       setMessageType('error');
     } finally {
@@ -65,7 +62,6 @@ function ForgotPassword() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
-
                 <label>Email Address</label>
               </div>
 
@@ -96,4 +92,5 @@ function ForgotPassword() {
     </section>
   );
 }
+
 export default ForgotPassword;
