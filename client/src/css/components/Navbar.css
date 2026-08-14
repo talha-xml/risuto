@@ -9,8 +9,9 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  background: rgba(11, 16, 32, 0.65);
-  backdrop-filter: blur(12px);
+  background: rgba(11, 16, 32, 0.72);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .logo {
@@ -19,6 +20,7 @@
   gap: 14px;
   text-decoration: none;
   color: white;
+  flex-shrink: 0;
 }
 
 .logo img {
@@ -53,6 +55,7 @@
   font-weight: 500;
   font-size: 0.98rem;
   transition: 0.25s;
+  white-space: nowrap;
 }
 
 .nav-links a svg {
@@ -68,6 +71,7 @@
   align-items: center;
   gap: 15px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .username {
@@ -75,6 +79,10 @@
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: 0.4px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .settings-btn {
@@ -92,18 +100,22 @@
 }
 
 .settings-btn svg {
-  font-size: 1.15rem;
+  font-size: 1rem;
+  transition: 0.3s;
 }
 
 .settings-btn:hover {
   background: var(--primary);
   border-color: var(--primary);
-  transform: rotate(45deg);
+}
+
+.settings-btn:hover svg {
+  transform: rotate(180deg);
 }
 
 .settings-menu {
   position: absolute;
-  top: 65px;
+  top: 62px;
   right: 0;
   width: 270px;
   background: #171722;
@@ -131,6 +143,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -149,6 +162,9 @@
 .menu-profile p {
   color: #9ca3af;
   font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .menu-divider {
@@ -181,4 +197,173 @@
 
 .danger:hover {
   background: rgba(239, 68, 68, 0.12);
+}
+
+@media (max-width: 1000px) {
+  .navbar {
+    padding: 0 30px;
+  }
+
+  .nav-links {
+    gap: 20px;
+  }
+
+  .nav-links a {
+    font-size: 0.9rem;
+  }
+
+  .username {
+    max-width: 110px;
+  }
+}
+
+@media (max-width: 750px) {
+  .navbar {
+    height: 70px;
+    padding: 0 18px;
+  }
+
+  .logo {
+    gap: 8px;
+  }
+
+  .logo img {
+    width: 42px;
+    height: 42px;
+  }
+
+  .logo span {
+    font-size: 1.3rem;
+    letter-spacing: 1.5px;
+  }
+
+  .nav-links {
+    gap: 10px;
+  }
+
+  .nav-links a {
+    gap: 5px;
+    font-size: 0.78rem;
+  }
+
+  .nav-links a svg {
+    font-size: 0.85rem;
+  }
+
+  .signup-btn {
+    padding: 9px 15px;
+  }
+
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .username {
+    max-width: 85px;
+    font-size: 0.8rem;
+  }
+
+  .settings-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .settings-menu {
+    top: 54px;
+    right: -4px;
+    width: min(270px, calc(100vw - 36px));
+  }
+}
+
+@media (max-width: 520px) {
+  .navbar {
+    padding: 0 14px;
+  }
+
+  .logo span {
+    font-size: 1.15rem;
+  }
+
+  .logo img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nav-links {
+    gap: 7px;
+  }
+
+  .nav-links a span {
+    display: none;
+  }
+
+  .nav-links a {
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+    border-radius: 10px;
+  }
+
+  .nav-links a svg {
+    font-size: 1rem;
+  }
+
+  .signup-btn {
+    width: auto !important;
+    height: auto !important;
+    padding: 8px 13px !important;
+    border-radius: 20px !important;
+  }
+
+  .signup-btn span {
+    display: inline !important;
+  }
+
+  .username {
+    display: none;
+  }
+
+  .settings-btn {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 360px) {
+  .navbar {
+    padding: 0 10px;
+  }
+
+  .logo span {
+    font-size: 1rem;
+  }
+
+  .logo img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .nav-links {
+    gap: 4px;
+  }
+
+  .nav-links a {
+    width: 32px;
+  }
+
+  .settings-btn {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  * {
+    cursor: auto;
+  }
+
+  .cursor-trail,
+  .cursor-core {
+    display: none !important;
+  }
 }
