@@ -5,7 +5,6 @@ const Anime = require('../models/Anime');
 exports.addAnime = async (req, res) => {
   try {
     const { title, status, priority, genres, notes, favorite, mature } = req.body;
-
     const anime = await Anime.create({
       user: req.user.id,
       title,
@@ -110,15 +109,9 @@ exports.getRecentlyAdded = async (req, res) => {
     const anime = await Anime.find({
       user: req.user.id
     })
-
-      .sort({
-        createdAt: -1
-      })
-
+      .sort({ createdAt: -1 })
       .limit(5)
-
       .select('title');
-
     res.status(200).json(anime);
   } catch (error) {
     res.status(500).json({
@@ -133,7 +126,6 @@ exports.getAnimeById = async (req, res) => {
   try {
     const anime = await Anime.findOne({
       _id: req.params.id,
-
       user: req.user.id
     });
 
@@ -157,7 +149,6 @@ exports.updateAnime = async (req, res) => {
   try {
     const anime = await Anime.findOne({
       _id: req.params.id,
-
       user: req.user.id
     });
 
@@ -168,19 +159,12 @@ exports.updateAnime = async (req, res) => {
     }
 
     const { title, notes, status, priority, genres, favorite, mature } = req.body;
-
     anime.title = title;
-
     anime.notes = notes;
-
     anime.status = status;
-
     anime.priority = priority;
-
     anime.genres = genres;
-
     anime.favorite = favorite;
-
     anime.mature = mature;
 
     await anime.save();

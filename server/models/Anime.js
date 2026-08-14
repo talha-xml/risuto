@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const animeSchema = new mongoose.Schema(
   {
     user: {
@@ -51,5 +50,4 @@ const animeSchema = new mongoose.Schema(
     timestamps: true
   }
 );
-
 module.exports = mongoose.model('Anime', animeSchema);
