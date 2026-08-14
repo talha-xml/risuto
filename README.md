@@ -50,6 +50,26 @@ Users can create an account and build their own anime library. Each title can be
 The dashboard provides an overview of the collection, while the library offers searching, filtering, sorting, and detailed anime management.
 Authentication and user-specific data are handled through a Node.js/Express backend with MongoDB, while the React frontend communicates with the backend through REST APIs.
 
+## Email Verification Note
+
+Risuto uses email verification to ensure that users have access to the email address they register with.
+
+The current deployment uses Resend's testing sender, which limits email delivery to the verified testing address. Because of this limitation, verification emails cannot currently be delivered to arbitrary users.
+
+For the current demo deployment, the verification token and generated verification URL are logged on the backend for development and administrative testing purposes. If a user does not receive the verification email, they can contact the administrator using their registered email address, and the account can be manually verified.
+
+This is a temporary workaround for the demo deployment and is not intended as the final production email-verification system.
+
+### Security Precautions
+
+- Users remain unverified until the verification process is completed.
+- Unverified accounts cannot log in.
+- Verification tokens are randomly generated using Node.js `crypto`.
+- Verification tokens are invalidated after successful verification.
+- Verification URLs are not exposed through the frontend.
+- Verification URLs are only available in protected backend logs during the current development/demo setup.
+- A production deployment should use a properly authenticated email domain and deliver verification links directly to the user's registered email address.
+  
 ## Project Structure
 
 Risuto/
