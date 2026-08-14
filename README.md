@@ -60,6 +60,10 @@ For the current demo deployment, the verification token and generated verificati
 
 This is a temporary workaround for the demo deployment and is not intended as the final production email-verification system.
 
+## NOTE regarding Usage
+
+I made it personally for my use only. However, you are free to use and create account on it. As, i am using free tiers of deployment, Please do not send huge requests or misuse the app. I might delete your credentials if i see weird activity or increased usage. 
+
 ### Security Precautions
 
 - Users remain unverified until the verification process is completed.
