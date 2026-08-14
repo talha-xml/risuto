@@ -237,7 +237,8 @@ exports.signup = async (req, res) => {
       console.error('RESEND EMAIL ERROR:', error);
 
       return res.status(500).json({
-        message: 'Account created, but verification email could not be sent.'
+        message:
+          'Account created, but verification email could not be sent. Please email us at mtalhafaizan30@gmail.com for manual verification. Please note that it can take up to 24 hours for us to respond. We apologize for the inconvenience.'
       });
     }
 
@@ -614,14 +615,11 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// =====================================================
 // Reset Password
-// =====================================================
 
 exports.resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
-
     if (!token || !password) {
       return res.status(400).json({
         message: 'Reset token and password are required.'
