@@ -11,7 +11,7 @@ The project was built with a focus on clean UI, practical authentication, and a 
 - User registration and login
 - Email verification
 - JWT-based authentication
-- Forgot and reset password functionality
+- Forgot and reset password functionality (Not fully functional due to RESEND Free testing Limit)
 - Personal anime library
 - Watch status tracking
 - Priority management
