@@ -1,10 +1,12 @@
 .library-page {
   padding-top: 100px;
 }
+
 .library-container {
   width: min(850px, 100%);
   margin: 0 auto;
 }
+
 .shooting-stars {
   position: fixed;
   inset: 0;
@@ -23,6 +25,7 @@
   box-shadow: 0 0 6px #ffffff, 0 0 12px #8b5cf6;
   animation: shootingStar linear infinite;
 }
+
 .shooting-stars span::after {
   content: '';
   position: absolute;
@@ -37,7 +40,6 @@
     rgba(255, 255, 255, 0.75),
     rgba(139, 92, 246, 0.45)
   );
-
   border-radius: 999px;
 }
 
@@ -72,10 +74,10 @@
 .reset-filters-btn:active {
   transform: rotate(-45deg) scale(0.92);
 }
+
 @keyframes shootingStar {
   0% {
     opacity: 0;
-
     transform: translate(0, 0) rotate(135deg) scale(0.4);
   }
 
@@ -89,7 +91,47 @@
 
   100% {
     opacity: 0;
-
     transform: translate(-1400px, 1400px) rotate(135deg) scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .library-page {
+    padding-top: 85px;
+  }
+
+  .library-container {
+    width: 94%;
+  }
+
+  .library-search-row {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .reset-filters-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .library-page {
+    padding-top: 75px;
+  }
+
+  .library-container {
+    width: 94%;
+  }
+
+  .library-search-row {
+    gap: 7px;
+  }
+
+  .reset-filters-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 15px;
+    border-radius: 9px;
   }
 }

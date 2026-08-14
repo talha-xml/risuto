@@ -44,3 +44,31 @@
   color: #d1d5db;
   font-weight: 600;
 }
+
+@media (max-width: 480px) {
+  .letter-group {
+    gap: 8px;
+  }
+
+  .letter-heading {
+    font-size: 1.3rem;
+    margin-bottom: 7px;
+    padding-left: 5px;
+  }
+
+  .pagination {
+    gap: 12px;
+    margin-top: 22px;
+    margin-bottom: 22px;
+  }
+
+  .pagination button {
+    min-width: 80px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .pagination span {
+    font-size: 0.9rem;
+  }
+}

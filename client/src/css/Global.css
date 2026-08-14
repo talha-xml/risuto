@@ -9,9 +9,13 @@
   padding: 0;
   box-sizing: border-box;
 }
-* {
-  cursor: none;
+
+@media (hover: hover) and (pointer: fine) {
+  * {
+    cursor: none;
+  }
 }
+
 html {
   scroll-behavior: smooth;
 }
@@ -46,7 +50,47 @@ p {
   color: var(--text-secondary);
   font-size: 1.2rem;
 }
+
 a {
   text-decoration: none;
   color: inherit;
+}
+
+@media (max-width: 768px) {
+  *,
+  *::before,
+  *::after {
+    cursor: auto !important;
+  }
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .app {
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
 }

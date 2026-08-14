@@ -25,6 +25,7 @@
   position: relative;
   z-index: 2;
   max-width: 600px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,6 +100,7 @@
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-8px);
   }
@@ -106,22 +108,59 @@
 
 @media (max-width: 600px) {
   .not-found-page {
-    padding: 30px 20px;
-    background-position: center;
+    padding: 30px 18px;
   }
-  .not-found-content h1 {
-    font-size: 110px;
-    letter-spacing: -5px;
-  }
-  .not-found-content h2 {
-    font-size: 23px;
-  }
-  .not-found-content p {
-    font-size: 14px;
-  }
+
   .not-found-icon {
     width: 65px;
     height: 65px;
     font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .not-found-content h1 {
+    font-size: 110px;
+    letter-spacing: -5px;
+  }
+
+  .not-found-content h2 {
+    margin-top: 20px;
+    font-size: 23px;
+  }
+
+  .not-found-content p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .not-found-home {
+    margin-top: 24px;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .not-found-page {
+    padding: 25px 14px;
+  }
+
+  .not-found-content h1 {
+    font-size: 90px;
+    letter-spacing: -4px;
+  }
+
+  .not-found-content h2 {
+    font-size: 20px;
+  }
+
+  .not-found-content p {
+    font-size: 13px;
+  }
+
+  .not-found-icon {
+    width: 58px;
+    height: 58px;
+    font-size: 25px;
   }
 }

@@ -4,3 +4,19 @@
   padding-top: 100px;
   padding-bottom: 70px;
 }
+
+@media (max-width: 768px) {
+  .add-anime-page {
+    width: 94%;
+    padding-top: 85px;
+    padding-bottom: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-anime-page {
+    width: 94%;
+    padding-top: 75px;
+    padding-bottom: 30px;
+  }
+}

@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   width: 350px;
+  max-width: 100%;
   height: 42px;
   background: #171221;
   border: 1px solid #6c3cff;
@@ -14,10 +15,12 @@
 .library-search svg {
   color: #b58cff;
   font-size: 16px;
+  flex-shrink: 0;
 }
 
 .library-search input {
   flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
@@ -27,4 +30,27 @@
 
 .library-search input::placeholder {
   color: #aaa;
+}
+
+@media (max-width: 600px) {
+  .library-search {
+    width: 100%;
+    height: 48px;
+    margin: 16px 0;
+    padding: 0 14px;
+  }
+
+  .library-search input {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .library-search {
+    height: 46px;
+  }
+
+  .library-search input {
+    font-size: 0.85rem;
+  }
 }

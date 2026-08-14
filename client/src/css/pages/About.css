@@ -65,6 +65,7 @@
 .section-icon {
   color: var(--primary);
   font-size: 2rem;
+  flex-shrink: 0;
 }
 
 .about-section p,
@@ -164,33 +165,6 @@
   font-size: 1rem;
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(35px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 900px) {
-  .about-container h1 {
-    font-size: 3.5rem;
-  }
-
-  .about-section h2,
-  .creator-section h2 {
-    font-size: 2rem;
-  }
-
-  .about-footer h2 {
-    font-size: 2rem;
-  }
-}
-
 .features-grid {
   margin-top: 45px;
   display: grid;
@@ -248,39 +222,208 @@
   font-weight: 600;
 }
 
-@media (max-width: 600px) {
-  .about-page {
-    padding: 70px 20px;
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
   }
 
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
   .about-container h1 {
-    font-size: 2.8rem;
-  }
-
-  .about-subtitle {
-    font-size: 1rem;
+    font-size: 3.5rem;
   }
 
   .about-section h2,
   .creator-section h2 {
+    font-size: 2rem;
+  }
+
+  .about-footer h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-page {
+    padding: 70px 16px;
+  }
+
+  .about-container {
+    width: 100%;
+  }
+
+  .about-japanese {
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+  }
+
+  .about-container h1 {
+    font-size: 2.6rem;
+    line-height: 1.1;
+    margin: 12px 0 18px;
+  }
+
+  .about-subtitle {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 45px;
+  }
+
+  .section-divider {
+    margin: 45px 0;
+  }
+
+  .section-divider svg {
     font-size: 1.6rem;
+  }
+
+  .about-section h2,
+  .creator-section h2 {
+    font-size: 1.5rem;
+    gap: 10px;
+    margin-bottom: 22px;
+    line-height: 1.3;
+  }
+
+  .section-icon {
+    font-size: 1.5rem;
   }
 
   .about-section p,
   .creator-section p {
-    font-size: 1rem;
-    line-height: 1.9;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 18px;
+  }
+
+  .quote-section {
+    padding: 10px 0;
   }
 
   .quote-section h3 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    line-height: 1.4;
   }
 
-  .about-footer h2 {
-    font-size: 1.6rem;
+  .quote-section span {
+    font-size: 0.9rem;
   }
 
   .tech-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .tech-card {
+    padding: 20px 12px;
+    gap: 12px;
+    border-radius: 14px;
+  }
+
+  .tech-card svg {
+    font-size: 2.2rem;
+  }
+
+  .tech-card span {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .features-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 30px;
+  }
+
+  .feature-card {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  .feature-icon {
+    font-size: 2.2rem;
+    margin-bottom: 18px;
+  }
+
+  .timeline {
+    margin-top: 35px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 12px;
+  }
+
+  .timeline-item {
+    min-width: 0;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .timeline-item svg {
+    font-size: 2rem;
+  }
+
+  .timeline-item span {
+    font-size: 0.9rem;
+  }
+
+  .about-footer {
+    margin-top: 55px;
+  }
+
+  .about-footer h2 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+  }
+
+  .about-footer h3 {
+    font-size: 1.3rem;
+  }
+
+  .about-footer span {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .about-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .about-container h1 {
+    font-size: 2.3rem;
+  }
+
+  .about-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .about-section h2,
+  .creator-section h2 {
+    font-size: 1.35rem;
+  }
+
+  .about-section p,
+  .creator-section p {
+    font-size: 0.9rem;
+  }
+
+  .tech-grid {
+    gap: 10px;
+  }
+
+  .tech-card {
+    padding: 18px 8px;
+  }
+
+  .feature-card {
+    padding: 20px 16px;
   }
 }

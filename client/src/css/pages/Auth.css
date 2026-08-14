@@ -50,7 +50,6 @@
 
 .login-page .auth-left {
   background: linear-gradient(rgba(11, 16, 32, 0.72), rgba(11, 16, 32, 0.72)), var(--auth-bg-image);
-
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 120% 10%;
@@ -181,6 +180,7 @@
 .password-toggle:hover {
   color: var(--primary);
 }
+
 .auth-success,
 .auth-error {
   margin: 15px 0;
@@ -201,4 +201,134 @@
   background: rgba(231, 76, 60, 0.15);
   border: 1px solid #e74c3c;
   color: #e74c3c;
+}
+
+@media (max-width: 768px) {
+  .auth-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .auth-left {
+    width: 100%;
+    min-height: 240px;
+    margin-right: 0;
+    padding: 2.5rem 1.5rem;
+    clip-path: none;
+  }
+
+  .auth-left h1 {
+    font-size: 2.8rem;
+    margin-bottom: 12px;
+  }
+
+  .auth-left p {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 420px;
+  }
+
+  .auth-heading {
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .auth-logo {
+    width: 55px;
+    height: 55px;
+  }
+
+  .auth-right {
+    flex: 1;
+    padding: 40px 24px;
+  }
+
+  .auth-right h2 {
+    font-size: 1.7rem;
+  }
+
+  .auth-right form {
+    max-width: 460px;
+    gap: 16px;
+  }
+
+  .input-group input {
+    padding: 16px;
+  }
+
+  .auth-btn {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-left {
+    min-height: 210px;
+    padding: 2rem 16px;
+  }
+
+  .auth-left h1 {
+    font-size: 2.3rem;
+  }
+
+  .auth-left p {
+    font-size: 0.9rem;
+  }
+
+  .auth-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .auth-heading {
+    gap: 10px;
+  }
+
+  .auth-right {
+    padding: 30px 18px;
+  }
+
+  .auth-right h2 {
+    font-size: 1.5rem;
+    margin-bottom: 18px;
+  }
+
+  .auth-right form {
+    gap: 14px;
+  }
+
+  .input-group input {
+    padding: 15px;
+    font-size: 0.95rem;
+  }
+
+  .input-group label {
+    left: 15px;
+  }
+
+  .password-toggle {
+    right: 14px;
+    font-size: 1.3rem;
+  }
+
+  .auth-btn {
+    padding: 15px;
+    font-size: 0.95rem;
+  }
+
+  .auth-right p {
+    margin-top: 22px;
+    font-size: 0.9rem;
+  }
+
+  .forgot-password {
+    font-size: 0.85rem;
+  }
+
+  .auth-success,
+  .auth-error {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
 }

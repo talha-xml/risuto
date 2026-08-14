@@ -41,6 +41,7 @@
 
 .anime-main {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -51,11 +52,15 @@
   color: white;
   font-size: 1rem;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .anime-genres {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .anime-genres span {
@@ -147,4 +152,89 @@
   right: 0;
   border-width: 6px 0 0 6px;
   border-color: #b48a00 transparent transparent transparent;
+}
+
+@media (max-width: 600px) {
+  .anime-row {
+    padding: 13px 14px;
+    border-radius: 12px;
+  }
+
+  .anime-top {
+    gap: 10px;
+  }
+
+  .anime-bottom {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .anime-main {
+    min-width: 0;
+  }
+
+  .anime-main h3 {
+    font-size: 0.95rem;
+    padding-right: 25px;
+  }
+
+  .anime-genres {
+    gap: 5px;
+    padding-right: 15px;
+  }
+
+  .anime-genres span {
+    padding: 3px 7px;
+    font-size: 0.68rem;
+  }
+
+  .anime-meta {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .status {
+    padding: 4px 9px;
+    font-size: 0.68rem;
+  }
+
+  .priority {
+    font-size: 0.75rem;
+  }
+
+  .icons {
+    gap: 6px;
+  }
+
+  .mature-icon {
+    font-size: 16px;
+  }
+
+  .favorite-ribbon {
+    top: 10px;
+    right: -35px;
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .anime-row {
+    padding: 12px;
+  }
+
+  .anime-main h3 {
+    font-size: 0.9rem;
+  }
+
+  .anime-genres span {
+    font-size: 0.63rem;
+  }
+
+  .anime-meta {
+    gap: 6px;
+  }
+
+  .status {
+    padding: 4px 8px;
+  }
 }

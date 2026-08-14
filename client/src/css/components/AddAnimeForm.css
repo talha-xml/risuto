@@ -289,6 +289,7 @@
   padding: 30px;
   border-radius: 15px;
   width: 350px;
+  max-width: calc(100% - 32px);
   text-align: center;
   color: white;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
@@ -326,4 +327,148 @@
 .confirm-delete {
   background: #ff4757;
   color: white;
+}
+
+@media (max-width: 768px) {
+  .anime-form {
+    padding: 30px 24px;
+  }
+
+  .anime-details {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .right-fields {
+    margin-top: 0;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+  }
+
+  .top-row,
+  .toggle-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .save-anime-btn,
+  .delete-anime-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .anime-form {
+    padding: 24px 16px;
+    border-radius: 18px;
+  }
+
+  .anime-form h1 {
+    font-size: 1.7rem;
+  }
+
+  .anime-form > p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+
+  .form-group input {
+    height: 48px;
+    padding: 14px;
+    font-size: 0.95rem;
+  }
+
+  .form-group textarea {
+    min-height: 150px;
+    height: 150px;
+    padding: 14px;
+    font-size: 0.95rem;
+  }
+
+  .mini-card,
+  .toggle-card {
+    border-radius: 14px;
+  }
+
+  .mini-card label,
+  .toggle-title {
+    font-size: 0.9rem;
+  }
+
+  .mini-card select {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  .genre-placeholder {
+    padding: 15px;
+    font-size: 0.85rem;
+  }
+
+  .toggle-card {
+    padding: 14px;
+  }
+
+  .save-anime-btn,
+  .delete-anime-btn {
+    height: 50px;
+    font-size: 0.95rem;
+  }
+
+  .delete-confirm-box {
+    padding: 24px 18px;
+  }
+
+  .delete-actions {
+    gap: 10px;
+  }
+
+  .cancel-delete,
+  .confirm-delete {
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .anime-form {
+    padding: 22px 14px;
+  }
+
+  .anime-form h1 {
+    font-size: 1.55rem;
+  }
+
+  .toggle-card {
+    padding: 12px;
+  }
+
+  .switch {
+    width: 52px;
+    height: 28px;
+  }
+
+  .slider::before {
+    width: 22px;
+    height: 22px;
+  }
+
+  .switch input:checked + .slider::before {
+    transform: translateX(24px);
+  }
 }

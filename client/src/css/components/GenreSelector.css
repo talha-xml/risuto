@@ -25,3 +25,29 @@
   border-color: #a855f7;
   box-shadow: 0 0 18px rgba(124, 58, 237, 0.35);
 }
+
+@media (max-width: 600px) {
+  .genre-selector {
+    gap: 8px;
+  }
+
+  .genre-pill {
+    padding: 9px 14px;
+    font-size: 0.82rem;
+  }
+
+  .genre-pill:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .genre-selector {
+    gap: 7px;
+  }
+
+  .genre-pill {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+}

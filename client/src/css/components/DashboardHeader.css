@@ -57,3 +57,47 @@
     transform: rotate(0deg);
   }
 }
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    margin-bottom: 28px;
+  }
+
+  .dashboard-text h1 {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .dashboard-text p {
+    max-width: 100%;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    margin-bottom: 22px;
+  }
+
+  .dashboard-text h1 {
+    font-size: 1.8rem;
+    line-height: 1.25;
+  }
+
+  .dashboard-text p {
+    font-size: 0.85rem;
+    line-height: 1.65;
+  }
+}
+
+@media (max-width: 380px) {
+  .dashboard-text h1 {
+    font-size: 1.65rem;
+  }
+
+  .dashboard-text p {
+    font-size: 0.82rem;
+  }
+}
