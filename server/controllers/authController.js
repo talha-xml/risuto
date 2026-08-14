@@ -238,7 +238,7 @@ exports.signup = async (req, res) => {
 
       return res.status(500).json({
         message:
-          'Account created, but verification email could not be sent. Please email us at mtalhafaizan30@gmail.com for manual verification. Please note that it can take up to 24 hours for us to respond. We apologize for the inconvenience.'
+          'Account created, but verification email could not be sent. Please email us your registered email at mtalhafaizan30@gmail.com for manual verification. Please note that it can take up to 24 hours for us to respond. We apologize for the inconvenience.'
       });
     }
 
