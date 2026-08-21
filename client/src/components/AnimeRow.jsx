@@ -4,9 +4,7 @@ import '../css/components/AnimeRow.css';
 
 function AnimeRow({ anime, onClick }) {
   return (
-    <div className="anime-row" onClick={() => onClick(anime)}>
-      {anime.favorite && <div className="favorite-ribbon">Cherished</div>}
-
+    <div className={`anime-row ${anime.favorite ? 'favorite' : ''}`} onClick={() => onClick(anime)}>
       <div className="anime-main">
         <div className="anime-top">
           <h3>{anime.title}</h3>

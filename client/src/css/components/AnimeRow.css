@@ -39,6 +39,11 @@
   transform: translateY(-2px);
 }
 
+.anime-row.favorite {
+  background: rgba(250, 204, 21, 0.08);
+  border-color: rgba(250, 204, 21, 0.25);
+}
+
 .anime-main {
   flex: 1;
   min-width: 0;
@@ -114,46 +119,6 @@
   font-size: 18px;
 }
 
-.favorite-ribbon {
-  position: absolute;
-  top: 12px;
-  right: -32px;
-  width: 110px;
-  padding: 4px 0;
-  background: #facc15;
-  color: #1f2937;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: 0.5px;
-  transform: rotate(45deg);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.favorite-ribbon::before,
-.favorite-ribbon::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  width: 0;
-  height: 0;
-  border-style: solid;
-}
-
-.favorite-ribbon::before {
-  left: 0;
-  border-width: 6px 6px 0 0;
-  border-color: #b48a00 transparent transparent transparent;
-}
-
-.favorite-ribbon::after {
-  right: 0;
-  border-width: 6px 0 0 6px;
-  border-color: #b48a00 transparent transparent transparent;
-}
-
 @media (max-width: 600px) {
   .anime-row {
     padding: 13px 14px;
@@ -208,12 +173,6 @@
 
   .mature-icon {
     font-size: 16px;
-  }
-
-  .favorite-ribbon {
-    top: 10px;
-    right: -35px;
-    font-size: 0.65rem;
   }
 }
 
