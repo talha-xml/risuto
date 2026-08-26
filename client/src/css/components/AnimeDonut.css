@@ -1,13 +1,13 @@
 .donut-card h2 {
   color: white;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
   font-size: 1.35rem;
 }
 
 .chart-wrapper {
   position: relative;
   width: 100%;
-  height: 350px;
+  height: 280px;
 }
 
 .chart-center {
@@ -22,48 +22,49 @@
 
 .chart-center h1 {
   color: white;
-  font-size: 3rem;
+  font-size: 2.7rem;
   margin: 0;
   font-weight: 700;
 }
 
 .chart-center span {
   color: #9ca3af;
-  margin-top: 4px;
+  margin-top: 2px;
   letter-spacing: 0.5px;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {
   .donut-card h2 {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
     font-size: 1.2rem;
   }
 
   .chart-wrapper {
-    height: 290px;
+    height: 250px;
   }
 
   .chart-center h1 {
-    font-size: 2.5rem;
+    font-size: 2.4rem;
   }
 
   .chart-center span {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 480px) {
   .donut-card h2 {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-size: 1.1rem;
   }
 
   .chart-wrapper {
-    height: 240px;
+    height: 220px;
   }
 
   .chart-center h1 {
-    font-size: 2.2rem;
+    font-size: 2.1rem;
   }
 
   .chart-center span {
