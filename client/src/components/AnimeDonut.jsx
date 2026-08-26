@@ -49,8 +49,8 @@ function AnimeDonut({ stats }) {
             <Pie
               data={data}
               dataKey="value"
-              innerRadius={90}
-              outerRadius={135}
+              innerRadius={95}
+              outerRadius={125}
               paddingAngle={4}
               stroke="none"
               animationDuration={1200}
