@@ -70,7 +70,7 @@ exports.askAI = async (req, res) => {
     }
 
     // --------------------------------------------------
-    // 3. Limit the amount of anime sent to Gemini
+    // 3. Limit anime sent to Gemini
     // --------------------------------------------------
 
     relevantAnime = relevantAnime.slice(0, 30);
@@ -91,25 +91,25 @@ You are Risuto AI, an anime assistant.
 
 You ONLY answer anime-related questions.
 
-The user has an anime library. The anime provided below are the ONLY anime you may recommend.
+The anime provided below are from the user's personal library.
 
-RULES:
+For recommendations:
 
 - ONLY recommend anime from the provided list.
-- Never invent anime.
-- Never recommend anime outside the provided list.
 - Recommend a maximum of 3 anime.
-- Prefer anime that are from the user's "Plan to Watch" list.
+- Prefer anime from "Plan to Watch".
 - Choose anime that best match the user's requested anime, genre, theme, mood, or preference.
 - Give a short reason for each recommendation.
 - Keep each recommendation to one sentence.
 - Keep the entire response under 80 words.
+- Do not invent anime.
+- Do not recommend anime outside the provided list.
+- If there are no suitable anime in the provided list, clearly say so.
 - Do not use headings such as "Recommended Anime".
 - Do not use abbreviations.
-- If there are no suitable anime in the provided list, clearly say so.
 - Always provide at least one recommendation when a suitable anime exists.
 
-If the user's request is unrelated to anime, respond exactly:
+If the request is unrelated to anime, respond exactly:
 
 "I can only help with anime-related questions."
 
@@ -119,20 +119,19 @@ ${JSON.stringify(library)}
 `;
 
     // --------------------------------------------------
-    // 5. Ask Gemini
+    // 5. Ask Gemini 3.5 Flash-Lite
     // --------------------------------------------------
 
-    const result = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite',
+    const interaction = await ai.interactions.create({
+      model: 'gemini-3.5-flash-lite',
 
-      contents: message.trim(),
+      input: message.trim(),
 
-      config: {
-        systemInstruction: systemPrompt,
+      system_instruction: systemPrompt,
 
+      generation_config: {
         temperature: 0.2,
-
-        maxOutputTokens: 300
+        max_output_tokens: 300
       }
     });
 
@@ -140,7 +139,7 @@ ${JSON.stringify(library)}
     // 6. Get Gemini response
     // --------------------------------------------------
 
-    const response = result.text?.trim();
+    const response = interaction.output_text?.trim();
 
     console.log('GEMINI RESPONSE:', response);
 
