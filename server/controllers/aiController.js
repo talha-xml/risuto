@@ -122,7 +122,7 @@ ${JSON.stringify(library)}
       ],
 
       temperature: 0.6,
-      max_tokens: 250
+      max_tokens: 500
     });
 
     const response = completion.choices?.[0]?.message?.content?.trim();
