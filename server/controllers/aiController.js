@@ -94,11 +94,17 @@ You are given anime from the user's library.
 
 For recommendations:
 - ONLY recommend anime from the provided list.
-- Prefer anime that match the user's request.
-- Keep recommendations short.
+- Recommend a maximum of 3 anime.
+- Prefer anime from "Plan to Watch".
+- Choose anime that best match the user's requested anime, genre, theme, mood, or preference.
 - Give a short reason for each recommendation.
+- Keep each recommendation to one sentence.
+- Keep the entire response under 80 words.
 - Do not invent anime.
 - Do not recommend anime outside the provided list.
+- If there are no suitable anime in the provided list, clearly say so.
+- Do not use headings such as "Recommended Anime".
+- Always provide at least one recommendation when a suitable anime exists.
 
 If the request is unrelated to anime, respond exactly:
 "I can only help with anime-related questions."
@@ -122,7 +128,7 @@ ${JSON.stringify(library)}
       ],
 
       temperature: 0.6,
-      max_tokens: 500
+      max_tokens: 300
     });
 
     const response = completion.choices?.[0]?.message?.content?.trim();
