@@ -1,8 +1,8 @@
-const Groq = require('groq-sdk');
+const { GoogleGenAI } = require('@google/genai');
 const Anime = require('../models/Anime');
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY
 });
 
 exports.askAI = async (req, res) => {
@@ -30,16 +30,16 @@ exports.askAI = async (req, res) => {
 
     let relevantAnime = [];
 
-    // --------------------------------
-    // 1. Check if user mentioned an anime
-    // --------------------------------
+    // --------------------------------------------------
+    // 1. Check if the user mentioned an anime
+    // --------------------------------------------------
 
     const mentionedAnime = animeList.find((anime) =>
       userMessage.includes(anime.title.toLowerCase())
     );
 
     if (mentionedAnime) {
-      // Find anime similar by genres
+      // Find anime with similar genres
       const sourceGenres = mentionedAnime.genres || [];
 
       relevantAnime = animeList.filter((anime) => {
@@ -48,7 +48,7 @@ exports.askAI = async (req, res) => {
           return false;
         }
 
-        // For recommendation, prefer Plan to Watch
+        // Only recommend Plan to Watch anime
         if (anime.status !== 'Plan to Watch') {
           return false;
         }
@@ -61,98 +61,106 @@ exports.askAI = async (req, res) => {
         );
       });
     } else {
-      // --------------------------------
+      // --------------------------------------------------
       // 2. No specific anime mentioned
-      // --------------------------------
+      // --------------------------------------------------
 
-      // Send only Plan to Watch anime
+      // Only send Plan to Watch anime
       relevantAnime = animeList.filter((anime) => anime.status === 'Plan to Watch');
     }
 
-    // --------------------------------
-    // 3. Limit data sent to Groq
-    // --------------------------------
+    // --------------------------------------------------
+    // 3. Limit the amount of anime sent to Gemini
+    // --------------------------------------------------
 
     relevantAnime = relevantAnime.slice(0, 30);
 
     const library = relevantAnime.map((anime) => ({
       title: anime.title,
       genres: anime.genres,
-      favorite: anime.favorite
+      favorite: anime.favorite,
+      priority: anime.priority
     }));
 
-    // --------------------------------
-    // 4. Ask Groq
-    // --------------------------------
+    // --------------------------------------------------
+    // 4. System instructions
+    // --------------------------------------------------
 
     const systemPrompt = `
 You are Risuto AI, an anime assistant.
 
-Only answer anime-related questions.
+You ONLY answer anime-related questions.
 
-You are given anime from the user's library.
+The user has an anime library. The anime provided below are the ONLY anime you may recommend.
 
-For recommendations:
+RULES:
+
 - ONLY recommend anime from the provided list.
+- Never invent anime.
+- Never recommend anime outside the provided list.
 - Recommend a maximum of 3 anime.
-- Prefer anime from "Plan to Watch".
+- Prefer anime that are from the user's "Plan to Watch" list.
 - Choose anime that best match the user's requested anime, genre, theme, mood, or preference.
 - Give a short reason for each recommendation.
 - Keep each recommendation to one sentence.
 - Keep the entire response under 80 words.
-- Do not invent anime.
-- Do not recommend anime outside the provided list.
-- If there are no suitable anime in the provided list, clearly say so.
 - Do not use headings such as "Recommended Anime".
+- Do not use abbreviations.
+- If there are no suitable anime in the provided list, clearly say so.
 - Always provide at least one recommendation when a suitable anime exists.
 
-If the request is unrelated to anime, respond exactly:
+If the user's request is unrelated to anime, respond exactly:
+
 "I can only help with anime-related questions."
 
 Anime available for this request:
+
 ${JSON.stringify(library)}
 `;
 
-    const completion = await groq.chat.completions.create({
-      model: 'openai/gpt-oss-20b',
+    // --------------------------------------------------
+    // 5. Ask Gemini
+    // --------------------------------------------------
 
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt
-        },
-        {
-          role: 'user',
-          content: message.trim()
-        }
-      ],
+    const result = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-lite',
 
-      temperature: 0.2,
-      seed: 42,
-      max_completion_tokens: 300,
-      include_reasoning: false
+      contents: message.trim(),
+
+      config: {
+        systemInstruction: systemPrompt,
+
+        temperature: 0.2,
+
+        maxOutputTokens: 300
+      }
     });
 
-    const aiMessage = completion.choices?.[0]?.message;
+    // --------------------------------------------------
+    // 6. Get Gemini response
+    // --------------------------------------------------
 
-    console.log('FULL AI MESSAGE:', JSON.stringify(aiMessage, null, 2));
+    const response = result.text?.trim();
 
-    const response = aiMessage?.content?.trim();
+    console.log('GEMINI RESPONSE:', response);
 
     if (!response) {
       return res.status(500).json({
-        message: 'AI could not generate a response.',
-        debug: aiMessage
+        message: 'AI could not generate a response.'
       });
     }
 
-    res.status(200).json({
+    // --------------------------------------------------
+    // 7. Send response to frontend
+    // --------------------------------------------------
+
+    return res.status(200).json({
       response
     });
   } catch (error) {
-    console.error('AI ERROR:', error);
+    console.error('GEMINI AI ERROR:', error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Something went wrong while contacting Risuto AI.'
     });
   }
