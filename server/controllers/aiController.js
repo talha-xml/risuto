@@ -67,7 +67,8 @@ ${JSON.stringify(library, null, 2)}
 `;
 
     const completion = await groq.chat.completions.create({
-      model: 'llama-3.1-8b-instant',
+      model: 'openai/gpt-oss-20b',
+
       messages: [
         {
           role: 'system',
@@ -78,6 +79,7 @@ ${JSON.stringify(library, null, 2)}
           content: message.trim()
         }
       ],
+
       temperature: 0.6,
       max_tokens: 500
     });
