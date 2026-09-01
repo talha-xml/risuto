@@ -96,7 +96,7 @@ The anime provided below are from the user's personal library.
 For recommendations:
 
 - ONLY recommend anime from the provided list.
-- Recommend a maximum of 3 anime.
+- Recommend a maximum of 5 anime.
 - Prefer anime from "Plan to Watch".
 - Choose anime that best match the user's requested anime, genre, theme, mood, or preference.
 - Give a short reason for each recommendation.
@@ -108,6 +108,7 @@ For recommendations:
 - Do not use headings such as "Recommended Anime".
 - Do not use abbreviations.
 - Always provide at least one recommendation when a suitable anime exists.
+- Always make the suggested Anime in bold.
 
 If the request is unrelated to anime, respond exactly:
 
@@ -131,7 +132,7 @@ ${JSON.stringify(library)}
 
       generation_config: {
         temperature: 0.2,
-        max_output_tokens: 300
+        max_output_tokens: 500
       }
     });
 
