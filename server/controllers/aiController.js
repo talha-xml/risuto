@@ -26,16 +26,19 @@ exports.askAI = async (req, res) => {
       });
     }
 
-    const userMessage = message.trim().toLowerCase();
+    const normalizeTitle = (title) =>
+      title
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const normalizedMessage = normalizeTitle(message);
 
     let relevantAnime = [];
 
-    // --------------------------------------------------
-    // 1. Check if the user mentioned an anime
-    // --------------------------------------------------
-
     const mentionedAnime = animeList.find((anime) =>
-      userMessage.includes(anime.title.toLowerCase())
+      normalizedMessage.includes(normalizeTitle(anime.title))
     );
 
     if (mentionedAnime) {
