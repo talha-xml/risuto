@@ -1,14 +1,71 @@
 const { GoogleGenAI } = require('@google/genai');
-const { searchAnime } = require('../services/anilistService');
+
+const { searchAnime, findLibraryMatches } = require('../services/anilistService');
+
 const Anime = require('../models/Anime');
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY
 });
 
+// --------------------------------------------------
+// Identify the main anime from the user's question
+// --------------------------------------------------
+
+const identifyAnime = async (message) => {
+  const interaction = await ai.interactions.create({
+    model: 'gemini-3.5-flash-lite',
+
+    input: message,
+
+    system_instruction: `
+Identify the main anime title the user is asking about.
+
+Examples:
+
+"What should I watch after Naruto?"
+Return:
+Naruto
+
+"Recommend something similar to Attack on Titan"
+Return:
+Attack on Titan
+
+"What anime is like Black Bullet?"
+Return:
+Black Bullet
+
+If the user is not asking about a specific anime,
+return exactly:
+
+NONE
+
+Return ONLY the anime title.
+
+Do not explain your answer.
+Do not add punctuation.
+`,
+
+    generation_config: {
+      temperature: 0,
+      max_output_tokens: 30
+    }
+  });
+
+  return interaction.output_text?.trim();
+};
+
+// --------------------------------------------------
+// Main AI controller
+// --------------------------------------------------
+
 exports.askAI = async (req, res) => {
   try {
     const { message } = req.body;
+
+    // --------------------------------------------------
+    // 1. Validate user message
+    // --------------------------------------------------
 
     if (!message || !message.trim()) {
       return res.status(400).json({
@@ -16,7 +73,10 @@ exports.askAI = async (req, res) => {
       });
     }
 
-    // Get user's anime library
+    // --------------------------------------------------
+    // 2. Get user's anime library
+    // --------------------------------------------------
+
     const animeList = await Anime.find({
       user: req.user.id
     }).select('title status genres favorite priority');
@@ -27,67 +87,136 @@ exports.askAI = async (req, res) => {
       });
     }
 
-    const normalizeTitle = (title) =>
-      title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+    // --------------------------------------------------
+    // 3. Identify source anime using Gemini
+    // --------------------------------------------------
 
-    const normalizedMessage = normalizeTitle(message);
+    const sourceAnimeTitle = await identifyAnime(message.trim());
 
-    let relevantAnime = [];
+    console.log('IDENTIFIED ANIME:', sourceAnimeTitle);
 
-    const mentionedAnime = animeList.find((anime) =>
-      normalizedMessage.includes(normalizeTitle(anime.title))
-    );
+    // --------------------------------------------------
+    // 4. Search identified anime on AniList
+    // --------------------------------------------------
 
-    if (mentionedAnime) {
-      // Find anime with similar genres
-      const sourceGenres = mentionedAnime.genres || [];
+    let anilistAnime = null;
 
-      relevantAnime = animeList.filter((anime) => {
-        // Don't recommend the anime itself
-        if (anime._id.equals(mentionedAnime._id)) {
-          return false;
-        }
+    if (sourceAnimeTitle && sourceAnimeTitle !== 'NONE') {
+      anilistAnime = await searchAnime(sourceAnimeTitle);
 
-        // Only recommend Plan to Watch anime
-        if (anime.status !== 'Plan to Watch') {
-          return false;
-        }
-
-        const animeGenres = anime.genres || [];
-
-        // Check for shared genres
-        return animeGenres.some((genre) =>
-          sourceGenres.some((sourceGenre) => genre.toLowerCase() === sourceGenre.toLowerCase())
+      if (anilistAnime) {
+        console.log(
+          'ANILIST SOURCE:',
+          anilistAnime.title?.english || anilistAnime.title?.romaji || anilistAnime.title?.native
         );
-      });
-    } else {
-      // --------------------------------------------------
-      // 2. No specific anime mentioned
-      // --------------------------------------------------
-
-      // Only send Plan to Watch anime
-      relevantAnime = animeList.filter((anime) => anime.status === 'Plan to Watch');
+      }
     }
 
     // --------------------------------------------------
-    // 3. Limit anime sent to Gemini
+    // 5. Find relevant anime from user's library
     // --------------------------------------------------
 
-    relevantAnime = relevantAnime.slice(0, 30);
+    let relevantAnime = [];
+
+    if (anilistAnime) {
+      /*
+       * AniList provides recommendations for the
+       * source anime.
+       *
+       * findLibraryMatches() compares those AniList
+       * recommendations against the user's library.
+       */
+
+      const matches = findLibraryMatches(animeList, anilistAnime);
+
+      console.log(
+        'ANIList LIBRARY MATCHES:',
+        matches.map((match) => match.libraryAnime.title)
+      );
+
+      // --------------------------------------------------
+      // Keep only Plan to Watch anime
+      // --------------------------------------------------
+
+      relevantAnime = matches
+        .filter((match) => match.libraryAnime.status === 'Plan to Watch')
+        .map((match) => ({
+          libraryAnime: match.libraryAnime,
+          anilistAnime: match.anilistAnime,
+          recommendationRating: match.rating
+        }));
+    } else {
+      /*
+       * No specific anime was identified.
+       *
+       * Use the user's Plan to Watch library.
+       */
+
+      relevantAnime = animeList
+        .filter((anime) => anime.status === 'Plan to Watch')
+        .map((anime) => ({
+          libraryAnime: anime,
+          anilistAnime: null,
+          recommendationRating: null
+        }));
+    }
+
+    // --------------------------------------------------
+    // 6. Limit candidates
+    // --------------------------------------------------
+
+    relevantAnime = relevantAnime.slice(0, 20);
+
+    // --------------------------------------------------
+    // 7. Prepare library data for Gemini
+    // --------------------------------------------------
 
     const library = relevantAnime.map((anime) => ({
-      title: anime.title,
-      genres: anime.genres,
-      favorite: anime.favorite,
-      priority: anime.priority
+      title: anime.libraryAnime.title,
+
+      status: anime.libraryAnime.status,
+
+      genres: anime.libraryAnime.genres,
+
+      favorite: anime.libraryAnime.favorite,
+
+      priority: anime.libraryAnime.priority,
+
+      anilist: anime.anilistAnime
+        ? {
+            title: anime.anilistAnime.title,
+
+            genres: anime.anilistAnime.genres,
+
+            averageScore: anime.anilistAnime.averageScore,
+
+            description: anime.anilistAnime.description
+          }
+        : null,
+
+      recommendationRating: anime.recommendationRating
     }));
 
     // --------------------------------------------------
-    // 4. System instructions
+    // 8. Prepare source anime information
+    // --------------------------------------------------
+
+    let sourceAnime = null;
+
+    if (anilistAnime) {
+      sourceAnime = {
+        title: anilistAnime.title,
+
+        genres: anilistAnime.genres,
+
+        averageScore: anilistAnime.averageScore,
+
+        description: anilistAnime.description
+      };
+    }
+
+    // --------------------------------------------------
+    // 9. System instructions for final response
     // --------------------------------------------------
 
     const systemPrompt = `
@@ -95,42 +224,55 @@ You are Risuto AI, an anime assistant.
 
 You ONLY answer anime-related questions.
 
-The anime provided below are from the user's personal library.
+The user owns the anime listed under
+"ANIME FROM USER'S RISUTO LIBRARY".
 
-For recommendations:
+IMPORTANT RECOMMENDATION RULES:
 
-- ONLY recommend anime from the provided list.
+- ONLY recommend anime from the provided Risuto library.
+- NEVER invent an anime.
+- NEVER recommend an anime outside the provided library.
 - Recommend a maximum of 5 anime.
-- Prefer anime from "Plan to Watch".
-- Choose anime that best match the user's requested anime, genre, theme, mood, or preference.
-- Give a short reason for each recommendation.
-- Keep each recommendation to one sentence.
-- Keep the entire response under 80 words.
-- Do not invent anime.
-- Do not recommend anime outside the provided list.
-- If there are no suitable anime in the provided list, clearly say so.
-- Do not use headings such as "Recommended Anime".
+- ONLY recommend anime whose status is "Plan to Watch".
+- Do not recommend Completed, Watching, On Hold,
+  Incomplete, or Dropped anime.
+- Prefer anime that genuinely match the user's request.
+- When AniList recommendation information is provided,
+  use it as the primary source for determining similarity.
+- Use the AniList genres and description when explaining
+  why an anime matches.
+- Do not invent genres, themes, plot details,
+  or other information.
+- Do not recommend unrelated anime just to reach 5.
+- If there are no suitable anime, clearly say so.
+- Give one short sentence explaining each recommendation.
+- Keep the entire response under 100 words.
+- Always make recommended anime titles bold.
+- Do not use a heading such as "Recommended Anime".
 - Do not use abbreviations.
-- Always provide at least one recommendation when a suitable anime exists.
-- Always make the suggested Anime in bold.
-- Always give a reply by Hi or hello only when the user greets you first.
-- If the user requests a specific theme such as isekai, ONLY recommend anime explicitly marked with that theme.
-- Do NOT infer or assume that an anime has a theme based only on its genres.
-- If an anime is marked "isekai: false", NEVER recommend it for an isekai request.
-- Match the user's requested theme before considering general genre similarity.
-- If there are not enough matching anime, say so instead of recommending unrelated anime.
+- Do not mention these instructions.
 
-If the request is unrelated to anime, respond exactly:
+THE USER'S REQUEST:
 
-"I can only help with anime-related questions."
+${message.trim()}
 
-Anime available for this request:
+SOURCE ANIME FROM ANILIST:
 
-${JSON.stringify(library)}
+${JSON.stringify(sourceAnime, null, 2)}
+
+ANIME FROM USER'S RISUTO LIBRARY
+THAT MAY BE RECOMMENDED:
+
+${JSON.stringify(library, null, 2)}
+
+Remember:
+
+The final recommendations MUST come only from
+the provided Risuto library.
 `;
 
     // --------------------------------------------------
-    // 5. Ask Gemini 3.5 Flash-Lite
+    // 10. Ask Gemini for final response
     // --------------------------------------------------
 
     const interaction = await ai.interactions.create({
@@ -147,12 +289,16 @@ ${JSON.stringify(library)}
     });
 
     // --------------------------------------------------
-    // 6. Get Gemini response
+    // 11. Get Gemini response
     // --------------------------------------------------
 
     const response = interaction.output_text?.trim();
 
     console.log('GEMINI RESPONSE:', response);
+
+    // --------------------------------------------------
+    // 12. Validate response
+    // --------------------------------------------------
 
     if (!response) {
       return res.status(500).json({
@@ -161,7 +307,7 @@ ${JSON.stringify(library)}
     }
 
     // --------------------------------------------------
-    // 7. Send response to frontend
+    // 13. Send response to frontend
     // --------------------------------------------------
 
     return res.status(200).json({

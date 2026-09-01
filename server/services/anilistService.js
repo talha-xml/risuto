@@ -1,5 +1,23 @@
 const ANILIST_URL = 'https://graphql.anilist.co';
 
+// --------------------------------------------------
+// Normalize anime titles for matching
+// --------------------------------------------------
+
+const normalizeTitle = (title) => {
+  return title
+    .toLowerCase()
+    .replace(/[\[\](){}]/g, ' ')
+    .replace(/[-_:.,!?'"`]/g, ' ')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+// --------------------------------------------------
+// Search anime on AniList
+// --------------------------------------------------
+
 const searchAnime = async (animeName) => {
   const query = `
     query ($search: String) {
@@ -16,13 +34,15 @@ const searchAnime = async (animeName) => {
         averageScore
         description
 
-        relations {
-          edges {
-            relationType(version: 2)
+        recommendations(
+          sort: RATING_DESC
+          perPage: 20
+        ) {
+          nodes {
+            rating
 
-            node {
+            mediaRecommendation {
               id
-              type
 
               title {
                 romaji
@@ -69,6 +89,56 @@ const searchAnime = async (animeName) => {
   return data.data.Media;
 };
 
+// --------------------------------------------------
+// Match AniList recommendations with Risuto library
+// --------------------------------------------------
+
+const findLibraryMatches = (library, anilistAnime) => {
+  if (!anilistAnime) {
+    return [];
+  }
+
+  const recommendations = anilistAnime.recommendations?.nodes || [];
+
+  const matches = [];
+
+  for (const recommendation of recommendations) {
+    const recommendedAnime = recommendation.mediaRecommendation;
+
+    if (!recommendedAnime) {
+      continue;
+    }
+
+    const titles = [
+      recommendedAnime.title?.romaji,
+      recommendedAnime.title?.english,
+      recommendedAnime.title?.native
+    ]
+      .filter(Boolean)
+      .map(normalizeTitle);
+
+    const libraryAnime = library.find((anime) => {
+      const libraryTitle = normalizeTitle(anime.title);
+
+      return titles.some(
+        (title) =>
+          title === libraryTitle || title.includes(libraryTitle) || libraryTitle.includes(title)
+      );
+    });
+
+    if (libraryAnime) {
+      matches.push({
+        libraryAnime,
+        anilistAnime: recommendedAnime,
+        recommendationRating: recommendation.rating
+      });
+    }
+  }
+
+  return matches;
+};
+
 module.exports = {
-  searchAnime
+  searchAnime,
+  findLibraryMatches
 };
