@@ -133,11 +133,16 @@ ${JSON.stringify(library)}
       include_reasoning: false
     });
 
-    const response = completion.choices?.[0]?.message?.content?.trim();
+    const aiMessage = completion.choices?.[0]?.message;
+
+    console.log('FULL AI MESSAGE:', JSON.stringify(aiMessage, null, 2));
+
+    const response = aiMessage?.content?.trim();
 
     if (!response) {
       return res.status(500).json({
-        message: 'AI could not generate a response.'
+        message: 'AI could not generate a response.',
+        debug: aiMessage
       });
     }
 
