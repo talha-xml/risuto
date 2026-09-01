@@ -127,8 +127,10 @@ ${JSON.stringify(library)}
         }
       ],
 
-      temperature: 0.6,
-      max_tokens: 300
+      temperature: 0.2,
+      seed: 42,
+      max_completion_tokens: 300,
+      include_reasoning: false
     });
 
     const response = completion.choices?.[0]?.message?.content?.trim();
