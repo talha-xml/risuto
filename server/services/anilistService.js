@@ -5,24 +5,49 @@ const searchAnime = async (animeName) => {
     query ($search: String) {
       Media(search: $search, type: ANIME) {
         id
+
         title {
           romaji
           english
           native
         }
+
         genres
         averageScore
         description
+
+        relations {
+          edges {
+            relationType(version: 2)
+
+            node {
+              id
+              type
+
+              title {
+                romaji
+                english
+                native
+              }
+
+              genres
+              averageScore
+              description
+            }
+          }
+        }
       }
     }
   `;
 
   const response = await fetch(ANILIST_URL, {
     method: 'POST',
+
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     },
+
     body: JSON.stringify({
       query,
       variables: {
@@ -36,6 +61,10 @@ const searchAnime = async (animeName) => {
   }
 
   const data = await response.json();
+
+  if (data.errors) {
+    throw new Error(data.errors[0]?.message || 'AniList GraphQL error');
+  }
 
   return data.data.Media;
 };

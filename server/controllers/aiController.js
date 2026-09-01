@@ -1,4 +1,5 @@
 const { GoogleGenAI } = require('@google/genai');
+const { searchAnime } = require('../services/anilistService');
 const Anime = require('../models/Anime');
 
 const ai = new GoogleGenAI({
