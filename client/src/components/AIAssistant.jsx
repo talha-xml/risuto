@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { FaRobot, FaTimes, FaPaperPlane } from 'react-icons/fa';
+
 import ReactMarkdown from 'react-markdown';
 
 import API_URL from '../config/api';
@@ -15,6 +17,47 @@ function AIAssistant() {
   const chatRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Handle top-left resize
+  const handleResizeStart = (e) => {
+    e.preventDefault();
+
+    const windowElement = chatRef.current;
+
+    if (!windowElement) {
+      return;
+    }
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startWidth = windowElement.offsetWidth;
+    const startHeight = windowElement.offsetHeight;
+
+    const handleResize = (event) => {
+      const newWidth = startWidth - (event.clientX - startX);
+      const newHeight = startHeight - (event.clientY - startY);
+
+      const minWidth = 320;
+      const minHeight = 400;
+      const maxWidth = window.innerWidth * 0.9;
+      const maxHeight = window.innerHeight * 0.9;
+
+      const width = Math.min(Math.max(newWidth, minWidth), maxWidth);
+
+      const height = Math.min(Math.max(newHeight, minHeight), maxHeight);
+
+      windowElement.style.width = `${width}px`;
+      windowElement.style.height = `${height}px`;
+    };
+
+    const handleResizeEnd = () => {
+      document.removeEventListener('mousemove', handleResize);
+      document.removeEventListener('mouseup', handleResizeEnd);
+    };
+
+    document.addEventListener('mousemove', handleResize);
+    document.addEventListener('mouseup', handleResizeEnd);
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -64,7 +107,6 @@ function AIAssistant() {
           text: 'Please log in to use Risuto AI.'
         }
       ]);
-
       return;
     }
 
@@ -143,6 +185,8 @@ function AIAssistant() {
 
       {open && (
         <div className="ai-window" ref={chatRef}>
+          <div className="ai-resize-handle" onMouseDown={handleResizeStart} />
+
           <div className="ai-header">
             <div className="ai-title">
               <FaRobot />
@@ -184,6 +228,7 @@ function AIAssistant() {
                 {messages.map((msg, index) => (
                   <div key={index} className={`chat-message ${msg.role}`}>
                     {msg.role === 'ai' && <strong>Risuto AI</strong>}
+
                     <ReactMarkdown>{msg.text}</ReactMarkdown>
                   </div>
                 ))}
