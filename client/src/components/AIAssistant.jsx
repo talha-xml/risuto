@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaRobot, FaTimes, FaPaperPlane } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown';
 
 import API_URL from '../config/api';
 
@@ -183,8 +184,7 @@ function AIAssistant() {
                 {messages.map((msg, index) => (
                   <div key={index} className={`chat-message ${msg.role}`}>
                     {msg.role === 'ai' && <strong>Risuto AI</strong>}
-
-                    <p>{msg.text}</p>
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
                   </div>
                 ))}
 

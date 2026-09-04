@@ -190,6 +190,19 @@
   animation-delay: 0.3s;
 }
 
+.chat-message strong {
+  color: white;
+  font-weight: 700;
+}
+
+.chat-message p {
+  margin: 0 0 8px;
+}
+
+.chat-message p:last-child {
+  margin-bottom: 0;
+}
+
 @keyframes typing {
   0%,
   60%,
