@@ -4,7 +4,6 @@ import Navbar from '../components/Navbar';
 import LibrarySearch from '../components/LibrarySearch';
 import LibraryFilters from '../components/LibraryFilters';
 import AnimeList from '../components/AnimeList';
-import AIAssistant from '../components/AIAssistant';
 
 import API_URL from '../config/api';
 
@@ -117,7 +116,6 @@ function Library() {
               <FaRedoAlt />
             </button>
           </div>
-          <AIAssistant />
 
           <LibraryFilters
             status={status}

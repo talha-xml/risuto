@@ -29,6 +29,11 @@
   bottom: 30px;
   width: 370px;
   height: 550px;
+  min-width: 320px;
+  min-height: 400px;
+  max-width: 90vw;
+  max-height: 90vh;
+  resize: both;
   background: #14141d;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
@@ -258,94 +263,53 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 @media (max-width: 768px) {
-  .ai-button {
-    bottom: 20px;
-    right: 20px;
-    padding: 13px 18px;
-    font-size: 0.9rem;
-    gap: 8px;
-  }
-
   .ai-window {
-    right: 20px;
-    bottom: 20px;
-    width: calc(100vw - 40px);
-    height: min(550px, calc(100vh - 40px));
+    right: 15px;
+    bottom: 15px;
+    width: calc(100vw - 30px);
+    height: min(550px, calc(100vh - 30px));
+
+    min-width: 0;
+    min-height: 0;
+    max-width: none;
+    max-height: none;
+
+    resize: none;
     border-radius: 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .ai-button {
-    bottom: 16px;
-    right: 16px;
-    padding: 12px 16px;
-    font-size: 0.85rem;
-  }
-
   .ai-window {
-    right: 10px;
-    bottom: 10px;
-    width: calc(100vw - 20px);
-    height: calc(100vh - 20px);
+    right: 8px;
+    bottom: 8px;
+    width: calc(100vw - 16px);
+    height: calc(100vh - 16px);
+
+    min-width: 0;
+    min-height: 0;
+    max-width: none;
     max-height: 600px;
+
+    resize: none;
     border-radius: 18px;
-  }
-
-  .ai-header {
-    padding: 15px 16px;
-  }
-
-  .ai-body {
-    padding: 15px;
-  }
-
-  .ai-message {
-    padding: 14px;
-    margin-bottom: 15px;
-  }
-
-  .suggestions {
-    gap: 9px;
-  }
-
-  .suggestions button {
-    padding: 11px;
-    font-size: 0.9rem;
-  }
-
-  .ai-input {
-    padding: 10px;
-    gap: 8px;
-  }
-
-  .ai-input input {
-    padding: 11px;
-    font-size: 0.9rem;
-  }
-
-  .ai-input button {
-    width: 44px;
-  }
-
-  .chat-message {
-    max-width: 90%;
-    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 380px) {
-  .ai-button {
-    bottom: 12px;
-    right: 12px;
-  }
-
   .ai-window {
-    right: 6px;
-    bottom: 6px;
-    width: calc(100vw - 12px);
-    height: calc(100vh - 12px);
+    right: 5px;
+    bottom: 5px;
+    width: calc(100vw - 10px);
+    height: calc(100vh - 10px);
+
+    min-width: 0;
+    min-height: 0;
+    max-width: none;
+    max-height: none;
+
+    resize: none;
+    border-radius: 16px;
   }
 }

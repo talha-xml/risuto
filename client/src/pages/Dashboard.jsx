@@ -3,7 +3,6 @@ import Navbar from '../components/Navbar';
 import DashboardHeader from '../components/DashboardHeader';
 import Analytics from '../components/Analytics';
 import RecentlyAdded from '../components/RecentlyAdded';
-import AIAssistant from '../components/AIAssistant';
 import API_URL from '../config/api';
 import '../css/pages/Dashboard.css';
 
@@ -48,7 +47,6 @@ function Dashboard() {
         <DashboardHeader />
         <Analytics stats={stats} />
         <RecentlyAdded />
-        <AIAssistant />
       </main>
     </>
   );

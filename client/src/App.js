@@ -5,6 +5,7 @@ import './css/Global.css';
 import AppRoutes from './routes/Routes';
 import CursorTrail from './components/CursorTrail';
 import API_URL from './config/api';
+import AIAssistant from './components/AIAssistant';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ function AppContent() {
   return (
     <>
       <AppRoutes />
+      <AIAssistant />
       <CursorTrail />
     </>
   );
