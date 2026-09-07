@@ -33,6 +33,23 @@
   letter-spacing: 0.5px;
 }
 
+.collection-card {
+  position: relative;
+}
+
+.collection-card .donut-card {
+  position: relative;
+  z-index: 1;
+}
+
+.collection-card .status-card {
+  position: relative;
+  z-index: 3;
+}
+
+.collection-card .chart-wrapper {
+  height: 350px;
+}
 @media (max-width: 768px) {
   .donut-card h2 {
     margin-bottom: 18px;
