@@ -46,7 +46,6 @@ function Dashboard() {
       <main className="dashboard">
         <DashboardHeader />
         <Analytics stats={stats} />
-        <RecentlyAdded />
       </main>
     </>
   );
