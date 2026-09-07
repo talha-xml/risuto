@@ -1,15 +1,19 @@
 .status-card {
   position: absolute;
-  top: 105px;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 350px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
 }
 
 .status-card h2 {
   position: absolute;
-  top: 355px;
+  top: auto;
+  bottom: -40px; /* Adjusted to keep the title below the centered chart */
   left: 0;
   color: white;
   font-size: 1.35rem;
@@ -19,6 +23,7 @@
 .status-radial {
   position: relative;
   width: 100%;
+  max-width: 600px;
   height: 270px;
 }
 
@@ -147,87 +152,13 @@
 
 @media (max-width: 600px) {
   .status-card {
-    top: 75px;
-    height: 300px;
+    top: 0;
+    height: 100%;
   }
 
   .status-card h2 {
-    top: 305px;
     font-size: 1.15rem;
-  }
-
-  .status-radial {
-    height: 235px;
-  }
-
-  .status-node {
-    width: 120px;
-    padding: 8px 9px;
-    border-radius: 10px;
-  }
-
-  .status-node-label {
-    font-size: 0.72rem;
-  }
-
-  .status-node-value {
-    font-size: 0.95rem;
-    margin-top: 4px;
-  }
-
-  .status-node-value small {
-    font-size: 0.65rem;
-  }
-
-  .status-dot {
-    width: 6px;
-    height: 6px;
-  }
-
-  .status-node::after {
-    width: 35px;
-  }
-
-  .status-node.plan {
-    left: 0;
-  }
-
-  .status-node.completed {
-    right: 0;
-  }
-
-  .status-node.watching {
-    left: -3px;
-  }
-
-  .status-node.incomplete {
-    right: -3px;
-  }
-
-  .status-node.hold {
-    left: 0;
-  }
-
-  .status-node.dropped {
-    right: 0;
-  }
-
-  .status-node.plan::after,
-  .status-node.watching::after,
-  .status-node.hold::after {
-    right: -35px;
-  }
-
-  .status-node.completed::after,
-  .status-node.incomplete::after,
-  .status-node.dropped::after {
-    left: -35px;
-  }
-}
-
-@media (max-width: 600px) {
-  .status-card h2 {
-    font-size: 1.15rem;
+    bottom: -30px;
   }
 
   .status-radial {
