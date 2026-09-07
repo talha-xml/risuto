@@ -38,6 +38,26 @@
   opacity: 1;
 }
 
+.collection-card .donut-card,
+.collection-card .status-card {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.collection-card .status-card {
+  margin-top: 10px;
+}
+
+.collection-card .status-card h2 {
+  margin-top: 25px;
+}
+
+.analytics > .recent {
+  margin: 0;
+}
+
 @media (max-width: 1000px) {
   .analytics {
     grid-template-columns: 1fr;
