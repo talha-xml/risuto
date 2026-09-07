@@ -1,17 +1,25 @@
 .status-card {
-  position: relative;
+  position: absolute;
+  top: 105px;
+  left: 0;
+  width: 100%;
+  height: 350px;
+  pointer-events: none;
 }
 
 .status-card h2 {
+  position: absolute;
+  top: 355px;
+  left: 0;
   color: white;
   font-size: 1.35rem;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 .status-radial {
   position: relative;
+  width: 100%;
   height: 270px;
-  margin-top: -5px;
 }
 
 .status-node {
@@ -19,7 +27,7 @@
   width: 145px;
   padding: 10px 12px;
   box-sizing: border-box;
-  z-index: 2;
+  z-index: 5;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.035);
@@ -27,6 +35,7 @@
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition: all 0.25s ease;
+  pointer-events: auto;
 }
 
 .status-node:hover {
@@ -89,32 +98,32 @@
 }
 
 .status-node.plan {
-  top: 5px;
+  top: 0;
   left: 5%;
 }
 
 .status-node.completed {
-  top: 5px;
+  top: 0;
   right: 5%;
 }
 
 .status-node.watching {
-  top: 92px;
+  top: 88px;
   left: 0;
 }
 
 .status-node.incomplete {
-  top: 92px;
+  top: 88px;
   right: 0;
 }
 
 .status-node.hold {
-  bottom: 0;
+  top: 176px;
   left: 5%;
 }
 
 .status-node.dropped {
-  bottom: 0;
+  top: 176px;
   right: 5%;
 }
 
@@ -122,7 +131,7 @@
 .status-node.watching::after,
 .status-node.hold::after {
   right: -55px;
-  top: 15px;
+  top: 50%;
   transform: rotate(25deg);
   transform-origin: left center;
 }
@@ -131,9 +140,89 @@
 .status-node.incomplete::after,
 .status-node.dropped::after {
   left: -55px;
-  top: 15px;
+  top: 50%;
   transform: rotate(-25deg);
   transform-origin: right center;
+}
+
+@media (max-width: 600px) {
+  .status-card {
+    top: 75px;
+    height: 300px;
+  }
+
+  .status-card h2 {
+    top: 305px;
+    font-size: 1.15rem;
+  }
+
+  .status-radial {
+    height: 235px;
+  }
+
+  .status-node {
+    width: 120px;
+    padding: 8px 9px;
+    border-radius: 10px;
+  }
+
+  .status-node-label {
+    font-size: 0.72rem;
+  }
+
+  .status-node-value {
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+
+  .status-node-value small {
+    font-size: 0.65rem;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .status-node::after {
+    width: 35px;
+  }
+
+  .status-node.plan {
+    left: 0;
+  }
+
+  .status-node.completed {
+    right: 0;
+  }
+
+  .status-node.watching {
+    left: -3px;
+  }
+
+  .status-node.incomplete {
+    right: -3px;
+  }
+
+  .status-node.hold {
+    left: 0;
+  }
+
+  .status-node.dropped {
+    right: 0;
+  }
+
+  .status-node.plan::after,
+  .status-node.watching::after,
+  .status-node.hold::after {
+    right: -35px;
+  }
+
+  .status-node.completed::after,
+  .status-node.incomplete::after,
+  .status-node.dropped::after {
+    left: -35px;
+  }
 }
 
 @media (max-width: 600px) {
