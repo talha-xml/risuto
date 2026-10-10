@@ -1,16 +1,17 @@
 // Analyze the user's anime-related question (token-efficient prompt)
 const analyzeQuestionPrompt = `You are a query classifier for an anime assistant. Analyze the user's question and return ONLY a valid JSON object with keys:
-"intent": one of ["recommendation", "anime_information", "character_information", "anime_relations", "airing_information", "comparison", "general_anime"]
+"intent": one of ["greeting", "recommendation", "anime_information", "character_information", "anime_relations", "airing_information", "comparison", "general_anime"]
 "source": one of ["risuto", "anilist", "both"]
 "anime": anime title as string or null
 "character": character name as string or null
 
 Source rules:
-- "risuto": user asks about their personal library/saved list/what they already have.
+- "risuto": user asks about their personal library/saved list/what they already have, or is greeting.
 - "anilist": user asks about external anime, airing schedules, character info, general anime, or anime outside their list.
 - "both": user wants AniList recommendations matched against their Risuto library.
 
 Intent rules:
+- "greeting": user greets (e.g., "Hi", "Hello", "Hey", "Konnichiwa", "Yo") or asks to introduce yourself.
 - "recommendation": what to watch or recommendations.
 - "anime_information": details, synopsis, genres, episodes, status of an anime.
 - "character_information": questions about a specific character.
@@ -21,6 +22,7 @@ Intent rules:
 
 Return ONLY raw JSON, no markdown code blocks, no text outside JSON.
 Examples:
+{"intent":"greeting","anime":null,"character":null,"source":"risuto"}
 {"intent":"recommendation","anime":"Attack on Titan","character":null,"source":"anilist"}
 {"intent":"recommendation","anime":null,"character":null,"source":"risuto"}
 {"intent":"character_information","anime":"Attack on Titan","character":"Levi Ackerman","source":"anilist"}
@@ -44,6 +46,22 @@ ${libraryData && libraryData.length > 0 ? JSON.stringify(libraryData) : 'None'}
 ANILIST DATA:
 ${anilistData ? JSON.stringify(anilistData) : 'None'}
 `;
+
+  // Strict Greeting Rules
+  systemPrompt += `
+GREETING RULES:
+- ONLY greet the user (e.g., "Hi", "Hello", "Hey there", "Konnichiwa") if the user explicitly greeted you in their message (e.g., "Hi", "Hello", "Hey", "Konnichiwa", "Yo") or asked you to introduce yourself.
+- When the user asks for recommendations, asks about an anime/character, or asks any question WITHOUT greeting: NEVER say "Hi", "Hello", "Hey there!", or any greeting. Start your response immediately with the answer.
+`;
+
+  // If the intent is explicitly a greeting
+  if (intent === 'greeting') {
+    systemPrompt += `
+GREETING INSTRUCTION:
+- Greet the user warmly and introduce yourself briefly as Risuto AI, their anime companion.
+- Ask how you can help them with their anime collection or recommendations today. Keep it short and friendly (1-2 sentences).
+`;
+  }
 
   // Handling missing/not-found results or spelling mistakes
   systemPrompt += `
