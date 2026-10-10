@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import DashboardHeader from '../components/DashboardHeader';
 import Analytics from '../components/Analytics';
-import RecentlyAdded from '../components/RecentlyAdded';
 import API_URL from '../config/api';
 import '../css/pages/Dashboard.css';
 

@@ -1,4 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { FaLayerGroup } from 'react-icons/fa';
 
 import '../css/components/AnimeDonut.css';
 
@@ -41,7 +42,9 @@ function AnimeDonut({ stats }) {
 
   return (
     <div className="donut-card">
-      <h2>Your Collection</h2>
+      <h2>
+        <FaLayerGroup className="heading-icon" /> Your Collection
+      </h2>
 
       <div className="chart-wrapper">
         <ResponsiveContainer width="100%" height={350}>

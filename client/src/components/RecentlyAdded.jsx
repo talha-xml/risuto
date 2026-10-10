@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaHistory } from 'react-icons/fa';
 import API_URL from '../config/api';
 import '../css/components/RecentlyAdded.css';
 
@@ -26,7 +27,9 @@ function RecentlyAdded() {
 
   return (
     <section className="recent">
-      <h2>Recently Added</h2>
+      <h2>
+        <FaHistory className="heading-icon" /> Recently Added
+      </h2>
       {anime.length === 0 ? (
         <div className="empty">No anime added yet.</div>
       ) : (

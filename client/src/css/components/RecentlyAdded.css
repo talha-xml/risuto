@@ -9,6 +9,15 @@
   color: white;
   margin-bottom: 25px;
   font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.recent h2 .heading-icon {
+  color: #a855f7;
+  font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
 .empty {

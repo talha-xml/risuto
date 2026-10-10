@@ -44,8 +44,6 @@ function StatusBreakdown({ stats }) {
 
   return (
     <div className="status-card">
-      <h2>Anime Breakdown</h2>
-
       <div className="status-radial">
         {statuses.map((status) => {
           const percentage = total === 0 ? 0 : Math.round((status.value / total) * 100);
