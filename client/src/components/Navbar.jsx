@@ -88,7 +88,7 @@ function Navbar() {
                 <div className="menu-divider"></div>
                 <button className="menu-item danger">
                   <FaTrashAlt />
-                  Delete Account
+                  Delete Account (Not Implemented)
                 </button>
               </div>
             )}

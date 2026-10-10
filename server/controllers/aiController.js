@@ -41,6 +41,18 @@ const analyzeQuestion = async (message) => {
   }
 };
 
+// Helper to clean descriptions and minimize tokens
+const cleanText = (text, maxLength = 220) => {
+  if (!text) return '';
+  const cleaned = text
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/~!.*?~!/g, '')
+    .replace(/\[.*?\]\(.*?\)/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return cleaned.length > maxLength ? `${cleaned.slice(0, maxLength)}...` : cleaned;
+};
+
 // Create the final Gemini response
 const generateFinalResponse = async (
   message,
@@ -63,7 +75,7 @@ const generateFinalResponse = async (
     system_instruction: systemPrompt,
     generation_config: {
       temperature: 0.2,
-      max_output_tokens: 500
+      max_output_tokens: 350
     }
   });
 
@@ -99,22 +111,17 @@ exports.askAI = async (req, res) => {
     const sourceAnimeTitle = analysis.anime;
     const characterName = analysis.character;
 
-    console.log('INTENT:', intent);
-    console.log('SOURCE:', source);
-    console.log('SOURCE ANIME:', sourceAnimeTitle);
-    console.log('CHARACTER:', characterName);
-
     let anilistData = null;
     let libraryData = [];
 
     // Handle recommendation questions
     if (intent === 'recommendation') {
-      // Risuto recommendations
       if (source === 'risuto') {
         console.log('Using Risuto library for recommendations.');
 
         libraryData = animeList
           .filter((anime) => anime.status === 'Plan to Watch')
+          .slice(0, 15)
           .map((anime) => ({
             title: anime.title,
             status: anime.status,
@@ -122,81 +129,81 @@ exports.askAI = async (req, res) => {
             favorite: anime.favorite,
             priority: anime.priority
           }));
-      }
-
-      // AniList recommendations
-      else if (source === 'anilist') {
+      } else if (source === 'anilist') {
         if (sourceAnimeTitle) {
           console.log('Getting AniList recommendations for:', sourceAnimeTitle);
 
-          anilistData = await getAnimeRecommendations(sourceAnimeTitle);
-
-          if (anilistData) {
-            console.log(
-              'ANILIST SOURCE:',
-              anilistData.title?.english || anilistData.title?.romaji || anilistData.title?.native
-            );
+          const raw = await getAnimeRecommendations(sourceAnimeTitle);
+          if (raw) {
+            anilistData = {
+              title: raw.title?.english || raw.title?.romaji,
+              recommendations: raw.recommendations?.nodes
+                ?.filter((n) => !n.mediaRecommendation?.type || n.mediaRecommendation.type === 'ANIME')
+                ?.slice(0, 5)
+                ?.map((n) => ({
+                  title: n.mediaRecommendation?.title?.english || n.mediaRecommendation?.title?.romaji,
+                  genres: n.mediaRecommendation?.genres,
+                  score: n.mediaRecommendation?.averageScore
+                }))
+            };
+          } else {
+            anilistData = { notFound: true, searchedTitle: sourceAnimeTitle };
           }
         }
-      }
-
-      // AniList + Risuto
-      else if (source === 'both') {
+      } else if (source === 'both') {
         if (sourceAnimeTitle) {
           console.log('Getting AniList recommendations for:', sourceAnimeTitle);
 
-          anilistData = await getAnimeRecommendations(sourceAnimeTitle);
-
-          if (anilistData) {
-            console.log(
-              'ANILIST SOURCE:',
-              anilistData.title?.english || anilistData.title?.romaji || anilistData.title?.native
-            );
-
-            const matches = findLibraryMatches(animeList, anilistData);
-
-            console.log(
-              'ANILIST LIBRARY MATCHES:',
-              matches.map((match) => match.libraryAnime.title)
-            );
-
+          const raw = await getAnimeRecommendations(sourceAnimeTitle);
+          if (raw) {
+            const matches = findLibraryMatches(animeList, raw);
             libraryData = matches
               .filter((match) => match.libraryAnime.status === 'Plan to Watch')
+              .slice(0, 10)
               .map((match) => ({
                 title: match.libraryAnime.title,
                 status: match.libraryAnime.status,
                 genres: match.libraryAnime.genres,
-                favorite: match.libraryAnime.favorite,
-                priority: match.libraryAnime.priority,
-                anilist: match.anilistAnime
-                  ? {
-                      title: match.anilistAnime.title,
-                      genres: match.anilistAnime.genres,
-                      averageScore: match.anilistAnime.averageScore,
-                      description: match.anilistAnime.description
-                    }
-                  : null,
-                recommendationRating: match.recommendationRating
+                matchedWith: match.anilistAnime?.title?.english || match.anilistAnime?.title?.romaji
               }));
+
+            anilistData = {
+              title: raw.title?.english || raw.title?.romaji,
+              recommendations: raw.recommendations?.nodes?.slice(0, 5)?.map((n) => ({
+                title: n.mediaRecommendation?.title?.english || n.mediaRecommendation?.title?.romaji,
+                genres: n.mediaRecommendation?.genres
+              }))
+            };
+          } else {
+            anilistData = { notFound: true, searchedTitle: sourceAnimeTitle };
           }
         }
       }
-
-      // Limit library candidates
-      libraryData = libraryData.slice(0, 20);
     }
 
     // Handle anime information questions
     else if (intent === 'anime_information' && source === 'anilist' && sourceAnimeTitle) {
       console.log('Getting AniList anime information for:', sourceAnimeTitle);
 
-      anilistData = await getAnimeInfo(sourceAnimeTitle);
-
-      if (anilistData) {
-        console.log(
-          'ANILIST ANIME:',
-          anilistData.title?.english || anilistData.title?.romaji || anilistData.title?.native
-        );
+      const raw = await getAnimeInfo(sourceAnimeTitle);
+      if (raw) {
+        anilistData = {
+          title: raw.title?.english || raw.title?.romaji || raw.title?.native,
+          genres: raw.genres,
+          format: raw.format,
+          status: raw.status,
+          episodes: raw.episodes,
+          seasonYear: raw.seasonYear,
+          score: raw.averageScore,
+          summary: cleanText(raw.description, 220),
+          studios: raw.studios?.nodes?.map((s) => s.name).slice(0, 2),
+          relations: raw.relations?.edges?.slice(0, 5)?.map((e) => ({
+            relation: e.relationType,
+            title: e.node?.title?.english || e.node?.title?.romaji
+          }))
+        };
+      } else {
+        anilistData = { notFound: true, searchedTitle: sourceAnimeTitle };
       }
     }
 
@@ -215,7 +222,7 @@ exports.askAI = async (req, res) => {
             priority: anime.priority
           }));
       } else {
-        libraryData = animeList.map((anime) => ({
+        libraryData = animeList.slice(0, 15).map((anime) => ({
           title: anime.title,
           status: anime.status,
           genres: anime.genres,
@@ -229,10 +236,17 @@ exports.askAI = async (req, res) => {
     else if (intent === 'character_information' && source === 'anilist' && characterName) {
       console.log('Getting AniList character information for:', characterName);
 
-      anilistData = await getCharacterInfo(characterName);
-
-      if (anilistData) {
-        console.log('ANILIST CHARACTER:', anilistData.name?.full);
+      const raw = await getCharacterInfo(characterName);
+      if (raw) {
+        anilistData = {
+          name: raw.name?.full || raw.name?.native,
+          gender: raw.gender,
+          age: raw.age,
+          bio: cleanText(raw.description, 250),
+          appearsIn: raw.media?.nodes?.slice(0, 4)?.map((m) => m.title?.english || m.title?.romaji)
+        };
+      } else {
+        anilistData = { notFound: true, searchedCharacter: characterName };
       }
     }
 
@@ -240,15 +254,18 @@ exports.askAI = async (req, res) => {
     else if (intent === 'anime_relations' && source === 'anilist' && sourceAnimeTitle) {
       console.log('Getting AniList relations for:', sourceAnimeTitle);
 
-      const animeInfo = await getAnimeInfo(sourceAnimeTitle);
-
-      if (animeInfo) {
+      const raw = await getAnimeInfo(sourceAnimeTitle);
+      if (raw) {
         anilistData = {
-          title: animeInfo.title,
-          relations: animeInfo.relations
+          title: raw.title?.english || raw.title?.romaji,
+          relations: raw.relations?.edges?.slice(0, 6)?.map((e) => ({
+            relation: e.relationType,
+            title: e.node?.title?.english || e.node?.title?.romaji,
+            format: e.node?.format
+          }))
         };
-
-        console.log('ANILIST RELATIONS FOUND:', animeInfo.relations?.edges?.length || 0);
+      } else {
+        anilistData = { notFound: true, searchedTitle: sourceAnimeTitle };
       }
     }
 
@@ -256,17 +273,16 @@ exports.askAI = async (req, res) => {
     else if (intent === 'airing_information' && source === 'anilist' && sourceAnimeTitle) {
       console.log('Getting AniList airing information for:', sourceAnimeTitle);
 
-      anilistData = await searchAnime(sourceAnimeTitle);
-
-      if (anilistData) {
+      const raw = await searchAnime(sourceAnimeTitle);
+      if (raw) {
         anilistData = {
-          title: anilistData.title,
-          status: anilistData.status,
-          episodes: anilistData.episodes,
-          nextAiringEpisode: anilistData.nextAiringEpisode
+          title: raw.title?.english || raw.title?.romaji,
+          status: raw.status,
+          episodes: raw.episodes,
+          nextAiringEpisode: raw.nextAiringEpisode
         };
-
-        console.log('NEXT AIRING EPISODE:', anilistData.nextAiringEpisode?.episode || 'None');
+      } else {
+        anilistData = { notFound: true, searchedTitle: sourceAnimeTitle };
       }
     }
 
@@ -283,8 +299,8 @@ exports.askAI = async (req, res) => {
 
     // Validate the response
     if (!response) {
-      return res.status(500).json({
-        message: 'AI could not generate a response.'
+      return res.status(200).json({
+        response: "I couldn't find any information on that. Perhaps you meant someone else or typed the spelling incorrectly?"
       });
     }
 
@@ -293,10 +309,10 @@ exports.askAI = async (req, res) => {
       response
     });
   } catch (error) {
-    console.error('GEMINI AI ERROR:', error);
+    console.error('RISUTO AI ERROR:', error);
 
-    return res.status(500).json({
-      message: 'Something went wrong while contacting Risuto AI.'
+    return res.status(200).json({
+      response: "I couldn't find the information you were looking for. Perhaps you meant someone else or incorrectly typed the spelling?"
     });
   }
 };

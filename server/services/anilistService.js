@@ -1,35 +1,59 @@
 const ANILIST_URL = 'https://graphql.anilist.co';
 
-// Send a GraphQL request to AniList
+// Send a GraphQL request to AniList with error handling and timeout
 const anilistRequest = async (query, variables = {}) => {
-  const response = await fetch(ANILIST_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
-    body: JSON.stringify({
-      query,
-      variables
-    })
-  });
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000);
 
-  if (!response.ok) {
-    throw new Error(`AniList API error: ${response.status}`);
+    const response = await fetch(ANILIST_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        query,
+        variables
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeout);
+
+    // If AniList returns 404 (Entity not found), return null gracefully
+    if (response.status === 404) {
+      return null;
+    }
+
+    if (!response.ok) {
+      console.warn(`AniList responded with status ${response.status}`);
+      return null;
+    }
+
+    const data = await response.json();
+
+    if (data.errors) {
+      const isNotFound = data.errors.some(
+        (err) => err.status === 404 || err.message?.toLowerCase().includes('not found')
+      );
+      if (isNotFound) {
+        return null;
+      }
+      console.warn('AniList GraphQL warning:', data.errors[0]?.message);
+      return data.data || null;
+    }
+
+    return data.data || null;
+  } catch (error) {
+    console.warn('AniList request error:', error.message);
+    return null;
   }
-
-  const data = await response.json();
-
-  if (data.errors) {
-    throw new Error(data.errors[0]?.message || 'AniList GraphQL error');
-  }
-
-  return data.data;
 };
 
 // Normalize anime titles for matching
 const normalizeTitle = (title) => {
-  return title
+  return (title || '')
     .toLowerCase()
     .replace(/[\[\]\(){}]/g, ' ')
     .replace(/[-\_:.,!?'"\`]/g, ' ')
@@ -38,7 +62,7 @@ const normalizeTitle = (title) => {
     .trim();
 };
 
-// Search anime and retrieve basic information
+// Search anime and retrieve basic information (token-efficient)
 const searchAnime = async (animeName) => {
   const query = `
     query ($search: String) {
@@ -48,48 +72,18 @@ const searchAnime = async (animeName) => {
           romaji
           english
           native
-          synonyms
         }
-
-        description
-        genres
-        tags {
-          name
-          rank
-        }
-
         format
         status
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
-        season
-        seasonYear
         episodes
-        duration
+        seasonYear
         averageScore
-        meanScore
-        popularity
-        favourites
-        source
-        countryOfOrigin
-
-        coverImage {
-          large
-        }
-        bannerImage
         nextAiringEpisode {
           episode
           airingAt
           timeUntilAiring
         }
+        genres
       }
     }
   `;
@@ -98,76 +92,32 @@ const searchAnime = async (animeName) => {
     search: animeName
   });
 
-  return data.Media;
+  return data?.Media || null;
 };
 
-// Get detailed information about an anime
+// Get detailed information about an anime (token-efficient: plain text description, no heavy images/tags)
 const getAnimeInfo = async (animeName) => {
   const query = `
     query ($search: String) {
       Media(search: $search, type: ANIME) {
         id
-
         title {
           romaji
           english
           native
-          synonyms
         }
-
-        description
+        description(asHtml: false)
         genres
-
-        tags {
-          name
-          rank
-          description
-        }
         format
         status
-
-        startDate {
-          year
-          month
-          day
-        }
-
-        endDate {
-          year
-          month
-          day
-        }
-
-        season
-        seasonYear
         episodes
-        duration
+        seasonYear
         averageScore
-        meanScore
-        popularity
-        favourites
-        source
-        countryOfOrigin
-
-        coverImage {
-          large
-        }
-
-        bannerImage
-        trailer {
-          id
-          site
-          thumbnail
-        }
-
-        studios {
+        studios(isMain: true) {
           nodes {
-            id
             name
-            isAnimationStudio
           }
         }
-
         relations {
           edges {
             relationType
@@ -178,7 +128,6 @@ const getAnimeInfo = async (animeName) => {
               title {
                 romaji
                 english
-                native
               }
             }
           }
@@ -191,10 +140,10 @@ const getAnimeInfo = async (animeName) => {
     search: animeName
   });
 
-  return data.Media;
+  return data?.Media || null;
 };
 
-// Search for a character on AniList
+// Search for a character on AniList (token-efficient)
 const getCharacterInfo = async (characterName) => {
   const query = `
     query ($search: String) {
@@ -205,34 +154,15 @@ const getCharacterInfo = async (characterName) => {
           native
           alternative
         }
-
         description
         gender
         age
-        bloodType
-
-        dateOfBirth {
-          year
-          month
-          day
-        }
-
-        image {
-          large
-        }
-
-        media {
+        media(type: ANIME, sort: POPULARITY_DESC, perPage: 5) {
           nodes {
-            id
-
             title {
               romaji
               english
-              native
             }
-
-            type
-            format
           }
         }
       }
@@ -243,10 +173,10 @@ const getCharacterInfo = async (characterName) => {
     search: characterName
   });
 
-  return data.Character;
+  return data?.Character || null;
 };
 
-// Get anime recommendations from AniList
+// Get anime recommendations from AniList (token-efficient: compact recommendations without raw descriptions)
 const getAnimeRecommendations = async (animeName) => {
   const query = `
     query ($search: String) {
@@ -259,15 +189,16 @@ const getAnimeRecommendations = async (animeName) => {
         }
         genres
         averageScore
-        description
         recommendations(
           sort: RATING_DESC
-          perPage: 20
+          perPage: 8
         ) {
           nodes {
             rating
             mediaRecommendation {
               id
+              type
+              format
               title {
                 romaji
                 english
@@ -275,7 +206,6 @@ const getAnimeRecommendations = async (animeName) => {
               }
               genres
               averageScore
-              description
             }
           }
         }
@@ -287,11 +217,11 @@ const getAnimeRecommendations = async (animeName) => {
     search: animeName
   });
 
-  return data.Media;
+  return data?.Media || null;
 };
 
 // Match AniList recommendations with Risuto library
-const findLibraryMatches = (library, anilistAnime) => {
+const findLibraryMatches = (library = [], anilistAnime) => {
   if (!anilistAnime) {
     return [];
   }
@@ -302,7 +232,7 @@ const findLibraryMatches = (library, anilistAnime) => {
   for (const recommendation of recommendations) {
     const recommendedAnime = recommendation.mediaRecommendation;
 
-    if (!recommendedAnime) {
+    if (!recommendedAnime || (recommendedAnime.type && recommendedAnime.type !== 'ANIME')) {
       continue;
     }
 
@@ -317,10 +247,13 @@ const findLibraryMatches = (library, anilistAnime) => {
     const libraryAnime = library.find((anime) => {
       const libraryTitle = normalizeTitle(anime.title);
 
-      return titles.some(
-        (title) =>
-          title === libraryTitle || title.includes(libraryTitle) || libraryTitle.includes(title)
-      );
+      return titles.some((title) => {
+        if (!title || !libraryTitle) return false;
+        if (title === libraryTitle) return true;
+        if (libraryTitle.length >= 4 && title.includes(libraryTitle)) return true;
+        if (title.length >= 4 && libraryTitle.includes(title)) return true;
+        return false;
+      });
     });
 
     if (libraryAnime) {

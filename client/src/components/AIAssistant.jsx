@@ -227,15 +227,17 @@ function AIAssistant() {
               <div className="ai-chat">
                 {messages.map((msg, index) => (
                   <div key={index} className={`chat-message ${msg.role}`}>
-                    {msg.role === 'ai' && <strong>Risuto AI</strong>}
+                    {msg.role === 'ai' && <span className="ai-author">Risuto AI</span>}
 
-                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    <div className="message-content">
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    </div>
                   </div>
                 ))}
 
                 {loading && (
                   <div className="chat-message ai">
-                    <strong>Risuto AI</strong>
+                    <span className="ai-author">Risuto AI</span>
 
                     <div className="ai-typing">
                       <span></span>
