@@ -34,7 +34,7 @@ function RecentlyAdded() {
         <div className="empty">No anime added yet.</div>
       ) : (
         <ul className="recent-list">
-          {anime.map((item) => (
+          {anime.slice(0, 5).map((item) => (
             <li key={item._id}>{item.title}</li>
           ))}
         </ul>

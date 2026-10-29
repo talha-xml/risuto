@@ -47,7 +47,7 @@ function AnimeDonut({ stats }) {
       </h2>
 
       <div className="chart-wrapper">
-        <ResponsiveContainer width="100%" height={350}>
+        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}

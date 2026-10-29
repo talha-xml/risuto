@@ -1,9 +1,9 @@
 .status-card {
   position: absolute;
-  top: -225px;
+  top: 85px;
   left: 0;
   width: 100%;
-  height: 350px;
+  height: 270px;
   pointer-events: none;
 }
 

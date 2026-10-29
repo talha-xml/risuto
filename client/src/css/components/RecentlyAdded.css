@@ -1,13 +1,13 @@
 .recent {
   background: #15151d;
   border-radius: 22px;
-  padding: 35px;
+  padding: 30px;
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .recent h2 {
   color: white;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   font-size: 1.35rem;
   display: flex;
   align-items: center;
