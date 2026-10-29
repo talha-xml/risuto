@@ -49,7 +49,7 @@
   content: '';
   position: absolute;
   height: 1px;
-  width: 55px;
+  width: 45px;
   background: linear-gradient(90deg, var(--status-color), transparent);
   opacity: 0.45;
 }
@@ -90,38 +90,38 @@
 
 .status-node.plan {
   top: 0;
-  left: 5%;
+  left: 8%;
 }
 
 .status-node.completed {
   top: 0;
-  right: 5%;
+  right: 8%;
 }
 
 .status-node.watching {
   top: 88px;
-  left: 0;
+  left: 3.5%;
 }
 
 .status-node.incomplete {
   top: 88px;
-  right: 0;
+  right: 3.5%;
 }
 
 .status-node.hold {
   top: 176px;
-  left: 5%;
+  left: 8%;
 }
 
 .status-node.dropped {
   top: 176px;
-  right: 5%;
+  right: 8%;
 }
 
 .status-node.plan::after,
 .status-node.watching::after,
 .status-node.hold::after {
-  right: -55px;
+  right: -45px;
   top: 50%;
   transform: rotate(25deg);
   transform-origin: left center;
@@ -130,7 +130,7 @@
 .status-node.completed::after,
 .status-node.incomplete::after,
 .status-node.dropped::after {
-  left: -55px;
+  left: -45px;
   top: 50%;
   transform: rotate(-25deg);
   transform-origin: right center;
@@ -175,27 +175,27 @@
   }
 
   .status-node.plan {
-    left: 0;
+    left: 8px;
   }
 
   .status-node.completed {
-    right: 0;
+    right: 8px;
   }
 
   .status-node.watching {
-    left: -3px;
+    left: 4px;
   }
 
   .status-node.incomplete {
-    right: -3px;
+    right: 4px;
   }
 
   .status-node.hold {
-    left: 0;
+    left: 8px;
   }
 
   .status-node.dropped {
-    right: 0;
+    right: 8px;
   }
 
   .status-node.plan::after,
