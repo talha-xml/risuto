@@ -236,8 +236,7 @@ exports.signup = async (req, res) => {
       console.error('BREVO EMAIL SEND ERROR:', emailError);
 
       return res.status(500).json({
-        message:
-          'Account created, but verification link could not be sent. Please email us with your registered email ONLY at (mtalhafaizan30@gmail.com) for manual verification. Please note that it can take up to 24 hours for us to respond. We apologize for the inconvenience.'
+        message: emailError.message || 'Account created, but verification link could not be sent.'
       });
     }
 
@@ -586,7 +585,7 @@ exports.forgotPassword = async (req, res) => {
 
       await user.save();
       return res.status(500).json({
-        message: 'Something went wrong. Please try again.'
+        message: emailError.message || 'Something went wrong. Please try again.'
       });
     }
 

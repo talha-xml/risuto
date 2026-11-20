@@ -3,11 +3,20 @@
  * Uses standard REST API to bypass cloud provider SMTP port blocking (Render/AWS/etc.)
  */
 const sendEmail = async ({ to, subject, html }) => {
-  const apiKey = process.env.BREVO_API_KEY;
-  const senderEmail = process.env.BREVO_SENDER || process.env.BREVO_USER || process.env.EMAIL_USER;
+  const apiKey = (process.env.BREVO_API_KEY || '').trim();
+  const senderEmail = (
+    process.env.BREVO_SENDER ||
+    process.env.BREVO_USER ||
+    process.env.EMAIL_USER ||
+    ''
+  ).trim();
 
   if (!apiKey) {
     throw new Error('BREVO_API_KEY is not set in environment variables');
+  }
+
+  if (!senderEmail) {
+    throw new Error('BREVO_SENDER is not set in environment variables (must be your verified Brevo email)');
   }
 
   const response = await fetch('https://api.brevo.com/v3/smtp/email', {
