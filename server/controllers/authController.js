@@ -2,7 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const resend = require('../config/email');
+const transporter = require('../config/email');
 
 // Signup
 
@@ -51,9 +51,10 @@ exports.signup = async (req, res) => {
     console.log('Attempting to send verification email to:', email);
     console.log('Verification URL:', verificationURL);
 
-    // Send verification email using Resend
-    const { data, error } = await resend.emails.send({
-      from: 'Risuto <onboarding@resend.dev>',
+    // Send verification email using Brevo via Nodemailer
+    const senderEmail = process.env.BREVO_SENDER || process.env.EMAIL_USER;
+    const mailOptions = {
+      from: `"Risuto" <${senderEmail}>`,
       to: email,
       subject: 'Verify Your Risuto Account',
 
@@ -228,19 +229,20 @@ exports.signup = async (req, res) => {
 
         </div>
       `
-    });
+    };
 
-    // Handle Resend error
-    if (error) {
-      console.error('RESEND EMAIL ERROR:', error);
+    // Send email with error handling
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Verification email sent successfully:', info.messageId);
+    } catch (emailError) {
+      console.error('BREVO EMAIL SEND ERROR:', emailError);
 
       return res.status(500).json({
         message:
           'Account created, but verification link could not be sent. Please email us with your registered email ONLY at (mtalhafaizan30@gmail.com) for manual verification. Please note that it can take up to 24 hours for us to respond. We apologize for the inconvenience.'
       });
     }
-
-    console.log('Verification email sent successfully:', data);
 
     // Successful signup
     return res.status(201).json({
@@ -400,9 +402,10 @@ exports.forgotPassword = async (req, res) => {
     console.log('Password reset requested for:', user.email);
     console.log('Password reset URL:', resetURL);
 
-    // Send the password reset email.
-    const { data, error } = await resend.emails.send({
-      from: 'Risuto <onboarding@resend.dev>',
+    // Send the password reset email using Brevo via Nodemailer.
+    const senderEmail = process.env.BREVO_SENDER || process.env.EMAIL_USER;
+    const mailOptions = {
+      from: `"Risuto" <${senderEmail}>`,
       to: user.email,
       subject: 'Reset Your Risuto Password',
 
@@ -576,10 +579,13 @@ exports.forgotPassword = async (req, res) => {
 
         </div>
       `
-    });
+    };
 
-    if (error) {
-      console.error('RESEND PASSWORD RESET ERROR:', error);
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Password reset email sent successfully:', info.messageId);
+    } catch (emailError) {
+      console.error('BREVO PASSWORD RESET ERROR:', emailError);
 
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
@@ -590,7 +596,6 @@ exports.forgotPassword = async (req, res) => {
       });
     }
 
-    console.log('Password reset email sent successfully:', data);
     return res.status(200).json({
       message: 'If an account exists with this email, we have sent a password reset link.'
     });
