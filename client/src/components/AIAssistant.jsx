@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { FaRobot, FaTimes, FaPaperPlane } from 'react-icons/fa';
 
@@ -13,10 +14,31 @@ function AIAssistant() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('token'));
 
+  const location = useLocation();
   const chatRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Sync login status on navigation and storage changes
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('token');
+      const loggedIn = !!token;
+      setIsLoggedIn(loggedIn);
+      if (!loggedIn) {
+        setOpen(false);
+      }
+    };
+
+    checkAuth();
+    window.addEventListener('storage', checkAuth);
+
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+    };
+  }, [location]);
 
   // Handle top-left resize
   const handleResizeStart = (e) => {
@@ -173,6 +195,10 @@ function AIAssistant() {
   const handleSuggestion = (suggestion) => {
     sendMessage(suggestion);
   };
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <>
