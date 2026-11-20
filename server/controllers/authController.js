@@ -2,7 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const transporter = require('../config/email');
+const { sendEmail } = require('../config/email');
 
 // Signup
 
@@ -51,14 +51,8 @@ exports.signup = async (req, res) => {
     console.log('Attempting to send verification email to:', email);
     console.log('Verification URL:', verificationURL);
 
-    // Send verification email using Brevo via Nodemailer
-    const senderEmail = process.env.BREVO_SENDER || process.env.EMAIL_USER;
-    const mailOptions = {
-      from: `"Risuto" <${senderEmail}>`,
-      to: email,
-      subject: 'Verify Your Risuto Account',
-
-      html: `
+    // Send verification email using Brevo REST API (HTTPS)
+    const verificationHtml = `
         <div style="
           margin: 0;
           padding: 40px 20px;
@@ -228,13 +222,16 @@ exports.signup = async (req, res) => {
           </div>
 
         </div>
-      `
-    };
+      `;
 
-    // Send email with error handling
+    // Send email with error handling via HTTPS REST API
     try {
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Verification email sent successfully:', info.messageId);
+      const data = await sendEmail({
+        to: email,
+        subject: 'Verify Your Risuto Account',
+        html: verificationHtml
+      });
+      console.log('Verification email sent successfully:', data);
     } catch (emailError) {
       console.error('BREVO EMAIL SEND ERROR:', emailError);
 
@@ -402,14 +399,8 @@ exports.forgotPassword = async (req, res) => {
     console.log('Password reset requested for:', user.email);
     console.log('Password reset URL:', resetURL);
 
-    // Send the password reset email using Brevo via Nodemailer.
-    const senderEmail = process.env.BREVO_SENDER || process.env.EMAIL_USER;
-    const mailOptions = {
-      from: `"Risuto" <${senderEmail}>`,
-      to: user.email,
-      subject: 'Reset Your Risuto Password',
-
-      html: `
+    // Send the password reset email using Brevo REST API (HTTPS).
+    const resetHtml = `
         <div style="
           margin: 0;
           padding: 40px 20px;
@@ -578,12 +569,15 @@ exports.forgotPassword = async (req, res) => {
           </div>
 
         </div>
-      `
-    };
+      `;
 
     try {
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Password reset email sent successfully:', info.messageId);
+      const data = await sendEmail({
+        to: user.email,
+        subject: 'Reset Your Risuto Password',
+        html: resetHtml
+      });
+      console.log('Password reset email sent successfully:', data);
     } catch (emailError) {
       console.error('BREVO PASSWORD RESET ERROR:', emailError);
 
