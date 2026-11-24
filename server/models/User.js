@@ -36,6 +36,20 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
 
+  pendingEmail: {
+    type: String,
+    lowercase: true,
+    trim: true
+  },
+
+  emailVerificationToken: {
+    type: String
+  },
+
+  emailVerificationExpires: {
+    type: Date
+  },
+
   createdAt: {
     type: Date,
     default: Date.now

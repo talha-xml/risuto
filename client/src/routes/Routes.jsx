@@ -9,6 +9,7 @@ import ResetPassword from '../pages/ResetPassword';
 import AddAnime from '../pages/AddAnime';
 import Library from '../pages/Library';
 import About from '../pages/About';
+import Settings from '../pages/Settings';
 import PublicRoute from '../components/PublicRoute';
 import ProtectedRoute from '../components/ProtectedRoute';
 
@@ -91,6 +92,15 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <AddAnime />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         }
       />

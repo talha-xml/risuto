@@ -4,9 +4,8 @@ import {
   FaHome,
   FaPlus,
   FaBookOpen,
-  FaSignOutAlt,
-  FaTrashAlt,
-  FaInfo
+  FaInfo,
+  FaCog
 } from 'react-icons/fa';
 import { useState, useRef, useEffect } from 'react';
 import logo from '../assets/icons/logo.png';
@@ -19,7 +18,6 @@ function Navbar() {
   const username = user?.fullName || '';
   const email = user?.email || '';
 
-  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
 
@@ -34,13 +32,6 @@ function Navbar() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setShowMenu(false);
-    navigate('/login');
-  };
   return (
     <nav className="navbar">
       <Link to={isLoggedIn ? '/dashboard' : '/'} className="logo">
@@ -76,20 +67,14 @@ function Navbar() {
                   <p>{email}</p>
                 </div>
                 <div className="menu-divider"></div>
+                <Link to="/settings" className="menu-item" onClick={() => setShowMenu(false)}>
+                  <FaCog />
+                  Settings
+                </Link>
                 <Link to="/about" className="menu-item" onClick={() => setShowMenu(false)}>
-                  {' '}
                   <FaInfo />
                   About
                 </Link>
-                <button className="menu-item" onClick={handleLogout}>
-                  <FaSignOutAlt />
-                  Logout
-                </button>
-                <div className="menu-divider"></div>
-                <button className="menu-item danger">
-                  <FaTrashAlt />
-                  Delete Account (Not Implemented)
-                </button>
               </div>
             )}
           </div>

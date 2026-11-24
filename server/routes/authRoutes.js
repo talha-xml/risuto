@@ -8,7 +8,11 @@ const {
   verifyEmail,
   forgotPassword,
   resetPassword,
-  getCurrentUser
+  getCurrentUser,
+  changePassword,
+  requestEmailChange,
+  verifyNewEmail,
+  deleteAccount
 } = require('../controllers/authController');
 
 router.post('/signup', signup);
@@ -17,4 +21,11 @@ router.get('/verify/:token', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.get('/me', authMiddleware, getCurrentUser);
+
+// Settings routes (Protected)
+router.post('/change-password', authMiddleware, changePassword);
+router.post('/request-email-change', authMiddleware, requestEmailChange);
+router.get('/verify-new-email/:token', verifyNewEmail);
+router.delete('/delete-account', authMiddleware, deleteAccount);
+
 module.exports = router;
