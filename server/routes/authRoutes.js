@@ -10,6 +10,7 @@ const {
   resetPassword,
   getCurrentUser,
   changePassword,
+  updateProfile,
   requestEmailChange,
   verifyNewEmail,
   deleteAccount
@@ -23,6 +24,7 @@ router.post('/reset-password', resetPassword);
 router.get('/me', authMiddleware, getCurrentUser);
 
 // Settings routes (Protected)
+router.patch('/profile', authMiddleware, updateProfile);
 router.post('/change-password', authMiddleware, changePassword);
 router.post('/request-email-change', authMiddleware, requestEmailChange);
 router.get('/verify-new-email/:token', verifyNewEmail);

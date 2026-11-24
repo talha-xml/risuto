@@ -689,6 +689,46 @@ exports.getCurrentUser = async (req, res) => {
   }
 };
 
+// Update Profile / Full Name
+exports.updateProfile = async (req, res) => {
+  try {
+    const { fullName } = req.body;
+
+    if (!fullName || !fullName.trim()) {
+      return res.status(400).json({
+        message: 'Full name cannot be empty.'
+      });
+    }
+
+    const trimmedName = fullName.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 50) {
+      return res.status(400).json({
+        message: 'Full name must be between 2 and 50 characters.'
+      });
+    }
+
+    const user = await User.findById(req.user.id).select('-password -verificationToken');
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found.'
+      });
+    }
+
+    user.fullName = trimmedName;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Name updated successfully.',
+      user
+    });
+  } catch (error) {
+    console.error('UPDATE PROFILE ERROR:', error);
+    res.status(500).json({
+      message: 'Failed to update name.'
+    });
+  }
+};
+
 // Change Password (from Settings)
 exports.changePassword = async (req, res) => {
   try {

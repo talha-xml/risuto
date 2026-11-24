@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  FaUser,
   FaKey,
   FaEnvelope,
   FaTrashAlt,
@@ -10,7 +9,9 @@ import {
   FaEyeSlash,
   FaCheckCircle,
   FaExclamationTriangle,
-  FaShieldAlt
+  FaEdit,
+  FaCheck,
+  FaTimes
 } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import API_URL from '../config/api';
@@ -24,6 +25,15 @@ function Settings() {
   const storedUser = localStorage.getItem('user');
   const initialUser = storedUser ? JSON.parse(storedUser) : null;
   const [user, setUser] = useState(initialUser);
+
+  // Full Name edit state
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [fullNameInput, setFullNameInput] = useState(initialUser?.fullName || '');
+  const [nameLoading, setNameLoading] = useState(false);
+  const [nameMsg, setNameMsg] = useState({ text: '', type: '' });
+
+  // Tab state for right column: 'password' | 'email'
+  const [activeTab, setActiveTab] = useState('password');
 
   // Form states: Change Password
   const [currentPassword, setCurrentPassword] = useState('');
@@ -57,18 +67,20 @@ function Settings() {
         text: 'Your email address has been successfully verified and updated!',
         type: 'success'
       });
-      // Refresh current user info
+      setActiveTab('email');
       fetchUserProfile();
     } else if (emailStatus === 'expired') {
       setEmailMsg({
         text: 'The email verification link is invalid or has expired. Please try again.',
         type: 'error'
       });
+      setActiveTab('email');
     } else if (emailStatus === 'conflict') {
       setEmailMsg({
         text: 'This email is already in use by another account.',
         type: 'error'
       });
+      setActiveTab('email');
     }
   }, [searchParams]);
 
@@ -87,6 +99,7 @@ function Settings() {
         const data = await res.json();
         if (data.user) {
           setUser(data.user);
+          setFullNameInput(data.user.fullName || '');
           localStorage.setItem('user', JSON.stringify(data.user));
         }
       }
@@ -98,6 +111,59 @@ function Settings() {
   useEffect(() => {
     fetchUserProfile();
   }, []);
+
+  // Update Full Name
+  const handleUpdateName = async (e) => {
+    e.preventDefault();
+    setNameMsg({ text: '', type: '' });
+
+    if (!fullNameInput.trim()) {
+      setNameMsg({ text: 'Name cannot be empty.', type: 'error' });
+      return;
+    }
+
+    if (fullNameInput.trim() === user?.fullName) {
+      setIsEditingName(false);
+      return;
+    }
+
+    setNameLoading(true);
+    const token = localStorage.getItem('token');
+
+    try {
+      const res = await fetch(`${API_URL}/auth/profile`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          fullName: fullNameInput.trim()
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setNameMsg({ text: data.message || 'Failed to update name.', type: 'error' });
+        return;
+      }
+
+      const updatedUser = { ...user, fullName: data.user.fullName };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setIsEditingName(false);
+      setNameMsg({ text: 'Name updated successfully!', type: 'success' });
+
+      // Notify Navbar and other listeners via storage event
+      window.dispatchEvent(new Event('storage'));
+    } catch (err) {
+      console.error(err);
+      setNameMsg({ text: 'Unable to connect to server.', type: 'error' });
+    } finally {
+      setNameLoading(false);
+    }
+  };
 
   // Logout handler
   const handleLogout = () => {
@@ -120,7 +186,7 @@ function Settings() {
     if (!passwordRegex.test(newPassword)) {
       setPassMsg({
         text:
-          'New password must be at least 8 characters long and include an uppercase letter, a number, and a special character.',
+          'Min. 8 characters with 1 uppercase letter, 1 number, and 1 special symbol.',
         type: 'error'
       });
       return;
@@ -253,6 +319,16 @@ function Settings() {
     }
   };
 
+  // Get user avatar initials
+  const initials = user?.fullName
+    ? user.fullName
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+    : 'U';
+
   return (
     <>
       <Navbar />
@@ -260,228 +336,90 @@ function Settings() {
         <div className="settings-container">
           <div className="settings-header">
             <span className="settings-badge">Account Settings</span>
-            <h1>Manage Your Account</h1>
-            <p className="settings-subtitle">
-              Update your security credentials, email address, or manage your account session.
-            </p>
+            <h1>Settings & Preferences</h1>
           </div>
 
-          <div className="settings-grid">
-            {/* Section 1: Profile Overview */}
-            <div className="settings-card profile-card">
-              <div className="card-header">
-                <div className="card-icon-wrapper">
-                  <FaUser />
-                </div>
-                <div>
-                  <h2>Profile Information</h2>
-                  <p>Your current active account details</p>
-                </div>
-              </div>
-
-              <div className="profile-details">
-                <div className="profile-item">
-                  <span className="profile-label">Full Name</span>
-                  <span className="profile-value">{user?.fullName || 'User'}</span>
-                </div>
-                <div className="profile-item">
-                  <span className="profile-label">Email Address</span>
-                  <span className="profile-value">{user?.email || 'No email available'}</span>
-                </div>
-                <div className="profile-item">
-                  <span className="profile-label">Account Status</span>
-                  <span className="profile-badge verified">
-                    <FaCheckCircle /> Verified
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Section 2: Change Password */}
-            <div className="settings-card">
-              <div className="card-header">
-                <div className="card-icon-wrapper purple">
-                  <FaKey />
-                </div>
-                <div>
-                  <h2>Change Password</h2>
-                  <p>Keep your account secure with a strong password</p>
-                </div>
-              </div>
-
-              {passMsg.text && (
-                <div className={`settings-alert ${passMsg.type}`}>
-                  {passMsg.type === 'success' ? <FaCheckCircle /> : <FaExclamationTriangle />}
-                  <span>{passMsg.text}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleChangePassword} className="settings-form">
-                <div className="settings-field">
-                  <label>Current Password</label>
-                  <div className="settings-input-wrapper">
-                    <input
-                      type={showCurrentPass ? 'text' : 'password'}
-                      placeholder="Enter current password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="eye-toggle"
-                      onClick={() => setShowCurrentPass(!showCurrentPass)}
-                    >
-                      {showCurrentPass ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
+          {/* Compact 2-Column Layout */}
+          <div className="settings-layout">
+            {/* LEFT COLUMN: Square Profile Card */}
+            <div className="settings-left-col">
+              <div className="settings-card square-profile-card">
+                <div className="profile-avatar-circle">
+                  <span>{initials}</span>
                 </div>
 
-                <div className="settings-field">
-                  <label>New Password</label>
-                  <div className="settings-input-wrapper">
-                    <input
-                      type={showNewPass ? 'text' : 'password'}
-                      placeholder="Enter new password (min. 8 chars, 1 uppercase, 1 symbol)"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="eye-toggle"
-                      onClick={() => setShowNewPass(!showNewPass)}
-                    >
-                      {showNewPass ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
+                {/* Editable Full Name */}
+                <div className="profile-name-section">
+                  {isEditingName ? (
+                    <form onSubmit={handleUpdateName} className="inline-name-form">
+                      <input
+                        type="text"
+                        value={fullNameInput}
+                        onChange={(e) => setFullNameInput(e.target.value)}
+                        placeholder="Your full name"
+                        autoFocus
+                        disabled={nameLoading}
+                      />
+                      <div className="inline-name-actions">
+                        <button
+                          type="submit"
+                          className="name-action-btn save"
+                          title="Save Name"
+                          disabled={nameLoading}
+                        >
+                          <FaCheck />
+                        </button>
+                        <button
+                          type="button"
+                          className="name-action-btn cancel"
+                          title="Cancel"
+                          onClick={() => {
+                            setFullNameInput(user?.fullName || '');
+                            setIsEditingName(false);
+                          }}
+                        >
+                          <FaTimes />
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="name-display-wrapper">
+                      <h2>{user?.fullName || 'User'}</h2>
+                      <button
+                        type="button"
+                        className="edit-name-btn"
+                        onClick={() => setIsEditingName(true)}
+                        title="Edit Full Name"
+                      >
+                        <FaEdit />
+                      </button>
+                    </div>
+                  )}
+
+                  {nameMsg.text && (
+                    <span className={`name-status-msg ${nameMsg.type}`}>
+                      {nameMsg.text}
+                    </span>
+                  )}
                 </div>
 
-                <div className="settings-field">
-                  <label>Confirm New Password</label>
-                  <div className="settings-input-wrapper">
-                    <input
-                      type={showConfirmPass ? 'text' : 'password'}
-                      placeholder="Re-enter new password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="eye-toggle"
-                      onClick={() => setShowConfirmPass(!showConfirmPass)}
-                    >
-                      {showConfirmPass ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
+                <p className="profile-email-tag">{user?.email}</p>
+
+                <div className="profile-status-pill">
+                  <FaCheckCircle /> Verified Account
                 </div>
 
-                <div className="settings-form-actions">
-                  <button type="submit" className="save-btn" disabled={passLoading}>
-                    {passLoading ? 'Updating Password...' : 'Update Password'}
-                  </button>
-                </div>
-              </form>
-            </div>
+                <div className="square-card-divider"></div>
 
-            {/* Section 3: Change Email */}
-            <div className="settings-card">
-              <div className="card-header">
-                <div className="card-icon-wrapper blue">
-                  <FaEnvelope />
-                </div>
-                <div>
-                  <h2>Change Email Address</h2>
-                  <p>A verification link will be sent to confirm your new email</p>
-                </div>
-              </div>
-
-              {emailMsg.text && (
-                <div className={`settings-alert ${emailMsg.type}`}>
-                  {emailMsg.type === 'success' ? <FaCheckCircle /> : <FaExclamationTriangle />}
-                  <span>{emailMsg.text}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleRequestEmailChange} className="settings-form">
-                <div className="settings-field">
-                  <label>New Email Address</label>
-                  <div className="settings-input-wrapper">
-                    <input
-                      type="email"
-                      placeholder="Enter new email address"
-                      value={newEmail}
-                      onChange={(e) => setNewEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="settings-field">
-                  <label>Current Password (for verification)</label>
-                  <div className="settings-input-wrapper">
-                    <input
-                      type={showEmailPass ? 'text' : 'password'}
-                      placeholder="Enter password to confirm request"
-                      value={emailPassword}
-                      onChange={(e) => setEmailPassword(e.target.value)}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="eye-toggle"
-                      onClick={() => setShowEmailPass(!showEmailPass)}
-                    >
-                      {showEmailPass ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="settings-form-actions">
-                  <button type="submit" className="save-btn" disabled={emailLoading}>
-                    {emailLoading ? 'Sending Verification Link...' : 'Send Verification Link'}
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            {/* Section 4: Session & Danger Zone */}
-            <div className="settings-card danger-card">
-              <div className="card-header">
-                <div className="card-icon-wrapper red">
-                  <FaShieldAlt />
-                </div>
-                <div>
-                  <h2>Session & Danger Zone</h2>
-                  <p>Sign out of your session or permanently remove your account</p>
-                </div>
-              </div>
-
-              <div className="danger-zone-actions">
-                <div className="danger-action-row">
-                  <div>
-                    <h4>Log Out of Risuto</h4>
-                    <p>Securely end your current session on this device.</p>
-                  </div>
-                  <button type="button" className="logout-action-btn" onClick={handleLogout}>
+                {/* Compact Session Actions inside Left Card */}
+                <div className="profile-actions-bottom">
+                  <button type="button" className="btn-logout" onClick={handleLogout}>
                     <FaSignOutAlt /> Log Out
                   </button>
-                </div>
 
-                <div className="divider"></div>
-
-                <div className="danger-action-row">
-                  <div>
-                    <h4 className="danger-text">Delete Account</h4>
-                    <p>
-                      Permanently delete your profile and all saved anime history. This cannot be
-                      undone.
-                    </p>
-                  </div>
                   <button
                     type="button"
-                    className="delete-action-btn"
+                    className="btn-delete"
                     onClick={() => {
                       setShowDeleteModal(true);
                       setDeleteMsg('');
@@ -492,6 +430,180 @@ function Settings() {
                     <FaTrashAlt /> Delete Account
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: Compact Password & Email Tabs */}
+            <div className="settings-right-col">
+              <div className="settings-card compact-security-card">
+                {/* Switcher Tabs */}
+                <div className="security-tabs">
+                  <button
+                    type="button"
+                    className={`tab-btn ${activeTab === 'password' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('password')}
+                  >
+                    <FaKey />
+                    <span>Change Password</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`tab-btn ${activeTab === 'email' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('email')}
+                  >
+                    <FaEnvelope />
+                    <span>Change Email</span>
+                  </button>
+                </div>
+
+                {/* Tab 1: Change Password */}
+                {activeTab === 'password' && (
+                  <div className="tab-pane">
+                    {passMsg.text && (
+                      <div className={`settings-alert ${passMsg.type}`}>
+                        {passMsg.type === 'success' ? (
+                          <FaCheckCircle />
+                        ) : (
+                          <FaExclamationTriangle />
+                        )}
+                        <span>{passMsg.text}</span>
+                      </div>
+                    )}
+
+                    <form onSubmit={handleChangePassword} className="settings-compact-form">
+                      <div className="form-group-compact">
+                        <label>Current Password</label>
+                        <div className="input-wrap-compact">
+                          <input
+                            type={showCurrentPass ? 'text' : 'password'}
+                            placeholder="Current password"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            required
+                          />
+                          <button
+                            type="button"
+                            className="eye-toggle-compact"
+                            onClick={() => setShowCurrentPass(!showCurrentPass)}
+                          >
+                            {showCurrentPass ? <FaEyeSlash /> : <FaEye />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="form-group-compact">
+                        <label>New Password</label>
+                        <div className="input-wrap-compact">
+                          <input
+                            type={showNewPass ? 'text' : 'password'}
+                            placeholder="New password (min 8 chars, 1 uppercase, 1 symbol)"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                          />
+                          <button
+                            type="button"
+                            className="eye-toggle-compact"
+                            onClick={() => setShowNewPass(!showNewPass)}
+                          >
+                            {showNewPass ? <FaEyeSlash /> : <FaEye />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="form-group-compact">
+                        <label>Confirm Password</label>
+                        <div className="input-wrap-compact">
+                          <input
+                            type={showConfirmPass ? 'text' : 'password'}
+                            placeholder="Re-enter new password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                          />
+                          <button
+                            type="button"
+                            className="eye-toggle-compact"
+                            onClick={() => setShowConfirmPass(!showConfirmPass)}
+                          >
+                            {showConfirmPass ? <FaEyeSlash /> : <FaEye />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="form-actions-compact">
+                        <button
+                          type="submit"
+                          className="btn-submit-compact"
+                          disabled={passLoading}
+                        >
+                          {passLoading ? 'Updating...' : 'Update Password'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Tab 2: Change Email */}
+                {activeTab === 'email' && (
+                  <div className="tab-pane">
+                    {emailMsg.text && (
+                      <div className={`settings-alert ${emailMsg.type}`}>
+                        {emailMsg.type === 'success' ? (
+                          <FaCheckCircle />
+                        ) : (
+                          <FaExclamationTriangle />
+                        )}
+                        <span>{emailMsg.text}</span>
+                      </div>
+                    )}
+
+                    <form onSubmit={handleRequestEmailChange} className="settings-compact-form">
+                      <div className="form-group-compact">
+                        <label>New Email Address</label>
+                        <div className="input-wrap-compact">
+                          <input
+                            type="email"
+                            placeholder="Enter your new email address"
+                            value={newEmail}
+                            onChange={(e) => setNewEmail(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-group-compact">
+                        <label>Confirm With Password</label>
+                        <div className="input-wrap-compact">
+                          <input
+                            type={showEmailPass ? 'text' : 'password'}
+                            placeholder="Enter password to confirm"
+                            value={emailPassword}
+                            onChange={(e) => setEmailPassword(e.target.value)}
+                            required
+                          />
+                          <button
+                            type="button"
+                            className="eye-toggle-compact"
+                            onClick={() => setShowEmailPass(!showEmailPass)}
+                          >
+                            {showEmailPass ? <FaEyeSlash /> : <FaEye />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="form-actions-compact">
+                        <button
+                          type="submit"
+                          className="btn-submit-compact"
+                          disabled={emailLoading}
+                        >
+                          {emailLoading ? 'Sending Link...' : 'Send Verification Link'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -557,7 +669,7 @@ function Settings() {
                   className="modal-delete-btn"
                   disabled={deleteLoading || deleteConfirmText !== 'DELETE'}
                 >
-                  {deleteLoading ? 'Deleting Account...' : 'Yes, Delete My Account'}
+                  {deleteLoading ? 'Deleting...' : 'Yes, Delete Account'}
                 </button>
               </div>
             </form>
@@ -569,4 +681,3 @@ function Settings() {
 }
 
 export default Settings;
-
